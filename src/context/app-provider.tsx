@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import type { Language } from '@/lib/data';
 import { translations } from '@/lib/translations';
 
@@ -38,6 +38,7 @@ export const useLanguage = () => {
 // --- Auth Context ---
 type AuthContextType = {
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string) => void;
   logout: () => void;
 };
@@ -46,6 +47,30 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+      const storedAuth = sessionStorage.getItem('isAuthenticated');
+      if (storedAuth === 'true') {
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("Could not access sessionStorage:", error);
+    }
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoading) {
+        try {
+          sessionStorage.setItem('isAuthenticated', isAuthenticated.toString());
+        } catch (error) {
+          console.error("Could not access sessionStorage:", error);
+        }
+    }
+  }, [isAuthenticated, isLoading]);
+
 
   const login = (email: string) => {
     // In a real app, you'd validate credentials against a backend.
@@ -62,7 +87,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

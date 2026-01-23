@@ -10,20 +10,16 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // A slight delay to prevent flicker if auth state is loading
-    const timer = setTimeout(() => {
-        if (!isAuthenticated) {
-          router.replace("/login");
-        }
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [isAuthenticated, router]);
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/login");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
-  if (!isAuthenticated) {
+  if (isLoading || !isAuthenticated) {
     return (
         <div className="container mx-auto px-4 py-12">
             <div className="space-y-4">

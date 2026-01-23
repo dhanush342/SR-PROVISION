@@ -17,9 +17,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const { t } = useLanguage();
   const router = useRouter();
   const { toast } = useToast();
@@ -37,6 +39,12 @@ export default function LoginPage() {
     },
   });
 
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace('/admin');
+    }
+  }, [isAuthenticated, isLoading, router]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     try {
         if (values.email !== "dhanushnaginane@gmail.com" || values.password !== "Srinu@14111707") {
@@ -51,6 +59,29 @@ export default function LoginPage() {
       });
     }
   };
+
+  if (isLoading || isAuthenticated) {
+    return (
+      <div className="container mx-auto flex min-h-[70vh] items-center justify-center px-4 py-12">
+        <Card className="w-full max-w-sm shadow-2xl">
+          <CardHeader>
+            <Skeleton className="h-8 w-3/4 mx-auto" />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+    </div>
+    );
+  }
 
   return (
     <div className="container mx-auto flex min-h-[70vh] items-center justify-center px-4 py-12">
