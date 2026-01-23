@@ -26,14 +26,14 @@ export default function TermsPage() {
           <h2>3. Use of Website</h2>
           <p>
             You are granted a limited license only for purposes of viewing the material contained on this website. You are specifically restricted from all of the following:
-            <ul>
-              <li>publishing any website material in any other media;</li>
-              <li>selling, sublicensing and/or otherwise commercializing any website material;</li>
-              <li>publicly performing and/or showing any website material;</li>
-              <li>using this website in any way that is or may be damaging to this website;</li>
-              <li>using this website contrary to applicable laws and regulations, or in any way may cause harm to the website, or to any person or business entity.</li>
-            </ul>
           </p>
+          <ul>
+            <li>publishing any website material in any other media;</li>
+            <li>selling, sublicensing and/or otherwise commercializing any website material;</li>
+            <li>publicly performing and/or showing any website material;</li>
+            <li>using this website in any way that is or may be damaging to this website;</li>
+            <li>using this website contrary to applicable laws and regulations, or in any way may cause harm to the website, or to any person or business entity.</li>
+          </ul>
           
           <h2>4. Products and Availability</h2>
           <p>
