@@ -1,3 +1,82 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A vibrant market stall with a variety of Indian spices and groceries.",
+      "imageUrl": "https://images.unsplash.com/photo-1706793986872-b599e261f155?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzcGljZXMlMjBtYXJrZXR8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spices market"
+    },
+    {
+      "id": "toor-dal",
+      "description": "A bowl of toor dal (pigeon peas)",
+      "imageUrl": "https://images.unsplash.com/photo-1667390034698-c2369cd1668b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkwNzAyMzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lentils bowl"
+    },
+    {
+      "id": "moong-dal",
+      "description": "A bowl of moong dal (mung beans)",
+      "imageUrl": "https://images.unsplash.com/photo-1711915408847-ae32b80a3fd0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkwNzAyMzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lentils bowl"
+    },
+    {
+      "id": "sona-masoori-rice",
+      "description": "A sack of Sona Masoori rice",
+      "imageUrl": "https://images.unsplash.com/photo-1723475158229-894679ca024e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyaWNlJTIwc2Fja3xlbnwwfHx8fDE3NjkwNzAyMzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rice sack"
+    },
+    {
+      "id": "basmati-rice",
+      "description": "A bowl of cooked Basmati rice",
+      "imageUrl": "https://images.unsplash.com/photo-1682566509568-ded8649b26bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyaWNlJTIwYm93bHxlbnwwfHx8fDE3NjkwOTkzNjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rice bowl"
+    },
+    {
+      "id": "turmeric-powder",
+      "description": "A spoonful of turmeric powder",
+      "imageUrl": "https://images.unsplash.com/photo-1633881614907-8587c9b93c2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzcGljZXMlMjBwb3dkZXJ8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spices powder"
+    },
+    {
+      "id": "chilli-powder",
+      "description": "A spoonful of red chilli powder",
+      "imageUrl": "https://images.unsplash.com/photo-1767514562412-91a63641cde1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzcGljZXMlMjBwb3dkZXJ8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spices powder"
+    },
+    {
+      "id": "coriander-powder",
+      "description": "A spoonful of coriander powder",
+      "imageUrl": "https://images.unsplash.com/photo-1722262796195-728fdf4a449f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzcGljZXMlMjBwb3dkZXJ8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spices powder"
+    },
+    {
+      "id": "sunflower-oil",
+      "description": "A bottle of sunflower oil",
+      "imageUrl": "https://images.unsplash.com/photo-1608571424237-381e6b43a2a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "groundnut-oil",
+      "description": "A bottle of groundnut oil",
+      "imageUrl": "https://images.unsplash.com/photo-1608571424266-edeb9bbefdec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "atta-flour",
+      "description": "A bag of whole wheat atta flour",
+      "imageUrl": "https://images.unsplash.com/photo-1646539248100-0a92d659d4d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmbG91ciUyMGJhZ3xlbnwwfHx8fDE3NjkwOTQxMzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flour bag"
+    },
+    {
+      "id": "sugar",
+      "description": "Cubes of white sugar",
+      "imageUrl": "https://images.unsplash.com/photo-1611484907128-9acda09a35a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzdWdhciUyMGN1YmVzfGVufDB8fHx8MTc2OTE0Mzg3M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sugar cubes"
+    },
+    {
+      "id": "salt",
+      "description": "A pile of iodized salt",
+      "imageUrl": "https://images.unsplash.com/photo-1599446018101-168ff8842a29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYWx0JTIwcGlsZXxlbnwwfHx8fDE3NjkxNDM4NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salt pile"
+    }
+  ]
 }
