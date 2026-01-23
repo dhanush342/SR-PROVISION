@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth, useLanguage } from "@/context/app-provider";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/app-provider";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 import { 
   SidebarProvider, 
@@ -31,9 +31,10 @@ import {
   Store,
 } from "lucide-react";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
 
 function AdminChrome({ children, onLogout }: { children: React.ReactNode, onLogout: () => void }) {
+  const pathname = usePathname();
+
   return (
     <SidebarProvider>
       <div className="flex h-screen">
@@ -54,48 +55,62 @@ function AdminChrome({ children, onLogout }: { children: React.ReactNode, onLogo
               <SidebarGroup>
                   <p className="text-xs font-semibold text-muted-foreground px-4 py-2 group-data-[collapsible=icon]:hidden">MAIN MENU</p>
                   <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Dashboard">
-                      <LayoutGrid />
-                      Dashboard
+                    <SidebarMenuButton asChild tooltip="Dashboard" isActive={pathname === '/admin'}>
+                      <Link href="/admin">
+                        <LayoutGrid />
+                        Dashboard
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Products" isActive>
-                      <Package />
-                      Products
+                    <SidebarMenuButton asChild tooltip="Products" isActive={pathname.startsWith('/admin/products')}>
+                      <Link href="/admin/products">
+                        <Package />
+                        Products
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Categories">
-                      <Folder />
-                      Categories
+                    <SidebarMenuButton asChild tooltip="Categories" isActive={pathname.startsWith('/admin/categories')}>
+                      <Link href="/admin/categories">
+                        <Folder />
+                        Categories
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Orders">
-                      <ShoppingCart />
-                      Orders
+                    <SidebarMenuButton asChild tooltip="Orders" isActive={pathname.startsWith('/admin/orders')}>
+                       <Link href="/admin/orders">
+                        <ShoppingCart />
+                        Orders
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Customers">
-                      <Users />
-                      Customers
+                    <SidebarMenuButton asChild tooltip="Customers" isActive={pathname.startsWith('/admin/customers')}>
+                       <Link href="/admin/customers">
+                        <Users />
+                        Customers
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
               </SidebarGroup>
               <SidebarGroup>
                   <p className="text-xs font-semibold text-muted-foreground px-4 py-2 group-data-[collapsible=icon]:hidden">ADMIN</p>
                   <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Owner Access">
-                      <KeyRound />
-                      Owner Access
+                      <SidebarMenuButton asChild tooltip="Owner Access" isActive={pathname.startsWith('/admin/owner-access')}>
+                        <Link href="/admin/owner-access">
+                          <KeyRound />
+                          Owner Access
+                        </Link>
                       </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                      <SidebarMenuButton tooltip="Settings">
-                      <Settings />
-                      Settings
+                      <SidebarMenuButton asChild tooltip="Settings" isActive={pathname.startsWith('/admin/settings')}>
+                        <Link href="/admin/settings">
+                          <Settings />
+                          Settings
+                        </Link>
                       </SidebarMenuButton>
                   </SidebarMenuItem>
               </SidebarGroup>
