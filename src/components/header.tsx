@@ -18,8 +18,6 @@ export const Header = () => {
           </Link>
           <nav className="hidden md:flex gap-4">
             <Link href="/#product-section" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">{t('products')}</Link>
-            <Link href="/blogs" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">{t('blogs')}</Link>
-            <Link href="/terms" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">{t('terms')}</Link>
           </nav>
         </div>
         <div className="flex items-center gap-2 md:gap-4">
