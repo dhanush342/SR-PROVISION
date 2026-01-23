@@ -77,6 +77,12 @@
       "description": "A pile of iodized salt",
       "imageUrl": "https://images.unsplash.com/photo-1599446018101-168ff8842a29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYWx0JTIwcGlsZXxlbnwwfHx8fDE3NjkxNDM4NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "salt pile"
+    },
+    {
+      "id": "tamarind",
+      "description": "A block of tamarind",
+      "imageUrl": "https://picsum.photos/seed/tamarind/400/300",
+      "imageHint": "tamarind block"
     }
   ]
 }

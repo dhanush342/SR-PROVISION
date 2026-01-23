@@ -34,11 +34,11 @@ export const categories: Category[] = [
     products: [
       {
         id: 'toor-dal-1',
-        name: { en: 'Toor Dal', te: 'కంది పప్పు', hi: 'अरहर की दाल' },
+        name: { en: 'Toor Dal', te: 'కంది పప్పు (Kandi Pappu)', hi: 'अरहर की दाल' },
         imageId: 'toor-dal',
         options: [
-          { quantity: '1 kg', price: 120 },
-          { quantity: '500 g', price: 65 },
+          { quantity: '500g', price: 85 },
+          { quantity: '1kg', price: 165 },
         ],
         availability: 'in-stock',
       },
@@ -57,9 +57,9 @@ export const categories: Category[] = [
   {
     id: 'rice',
     name: {
-      en: 'Rice & Rice Products',
-      te: 'బియ్యం & బియ్యం ఉత్పత్తులు',
-      hi: 'चावल और चावल उत्पाद',
+      en: 'Rice & Grains',
+      te: 'బియ్యం & ధాన్యాలు',
+      hi: 'चावल और अनाज',
     },
     products: [
       {
@@ -67,9 +67,8 @@ export const categories: Category[] = [
         name: { en: 'Sona Masoori Rice', te: 'సోనా మసూరి బియ్యం', hi: 'सोना मसूरी चावल' },
         imageId: 'sona-masoori-rice',
         options: [
-          { quantity: '25 kg', price: 1500 },
-          { quantity: '10 kg', price: 650 },
-          { quantity: '5 kg', price: 340 },
+          { quantity: '25kg', price: 1250 },
+          { quantity: '10kg', price: 550 },
         ],
         availability: 'in-stock',
       },
@@ -95,23 +94,21 @@ export const categories: Category[] = [
     products: [
       {
         id: 'turmeric-powder-1',
-        name: { en: 'Turmeric Powder', te: 'పసుపు పొడి', hi: 'हल्दी पाउडर' },
+        name: { en: 'Turmeric Powder', te: 'పసుపు (Pasupu)', hi: 'हल्दी पाउडर' },
         imageId: 'turmeric-powder',
         options: [
-          { quantity: '500 g', price: 80 },
-          { quantity: '200 g', price: 35 },
+          { quantity: '100g', price: 30 },
         ],
         availability: 'in-stock',
       },
       {
         id: 'chilli-powder-1',
-        name: { en: 'Chilli Powder', te: 'కారం పొడి', hi: 'मिर्च पाउडर' },
+        name: { en: 'Red Chilli Powder', te: 'కారం పొడి (Karam)', hi: 'मिर्च पाउडर' },
         imageId: 'chilli-powder',
         options: [
-          { quantity: '500 g', price: 150 },
-          { quantity: '200 g', price: 65 },
+          { quantity: '250g', price: 95 },
         ],
-        availability: 'in-stock',
+        availability: 'out-of-stock',
       },
        {
         id: 'coriander-powder-1',
@@ -125,6 +122,26 @@ export const categories: Category[] = [
       },
     ],
   },
+  {
+    id: 'cooking_essentials',
+    name: {
+        en: 'Cooking Essentials',
+        te: 'వంట సామగ్రి',
+        hi: 'खाना पकाने की अनिवार्यता',
+    },
+    products: [
+        {
+            id: 'tamarind-1',
+            name: { en: 'Tamarind', te: 'చింతపండు (Chintapandu)', hi: 'इमली' },
+            imageId: 'tamarind',
+            options: [
+                { quantity: '500g', price: 60 },
+                { quantity: '250g', price: 35 },
+            ],
+            availability: 'in-stock',
+        },
+    ]
+   },
   {
     id: 'oils',
     name: {
