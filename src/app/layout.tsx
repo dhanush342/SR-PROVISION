@@ -7,9 +7,9 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Srinivasa Rao Provision Online - Authentic Indian Groceries',
-  description: 'Your one-stop shop for authentic Indian groceries. We offer a wide range of products, from spices and lentils to rice and snacks. Order online for a taste of home.',
-  keywords: 'Indian groceries, online grocery, Srinivasa Rao Provision, spices, lentils, rice, snacks',
+  title: 'Srinivasa Rao Provision - Authentic Indian Groceries in Kandukur',
+  description: 'Your one-stop shop for authentic Indian groceries in Kandukur. We offer a wide range of products, from spices and lentils to rice and snacks.',
+  keywords: 'Indian groceries, online grocery, Srinivasa Rao Provision, spices, lentils, rice, snacks, Kandukur',
 };
 
 export default function RootLayout({
@@ -27,20 +27,20 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "name": "Srinivasa Rao Provision Online",
+            "@type": "GroceryStore",
+            "name": "Srinivasa Rao Provision",
             "address": {
               "@type": "PostalAddress",
-              "streetAddress": "123 Main Street",
-              "addressLocality": "Your City",
-              "addressRegion": "Your State",
-              "postalCode": "000000",
+              "streetAddress": "Leguntapadu Rd, opposite to sivalayam",
+              "addressLocality": "Kandukur",
+              "addressRegion": "Andhra Pradesh",
+              "postalCode": "523105",
               "addressCountry": "IN"
             },
             "telephone": "+91-9876543210",
-            "url": "https://your-website.com",
-            "priceRange": "$$",
-            "image": "https://your-website.com/logo.png"
+            "url": "https://srinivasa-rao-provision.example.com/",
+            "priceRange": "$",
+            "image": "https://srinivasa-rao-provision.example.com/logo.png"
           }) }}
         />
       </head>
