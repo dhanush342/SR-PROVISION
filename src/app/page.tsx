@@ -1,13 +1,55 @@
+'use client';
+
+import { useState } from 'react';
 import { Hero } from '@/components/hero';
 import { ProductList } from '@/components/product-list';
-import { categories } from '@/lib/data';
+import { categories, type Category } from '@/lib/data';
+import { useLanguage } from '@/context/app-provider';
+import { Button } from '@/components/ui/button';
+import { LayoutGrid } from 'lucide-react';
 
 export default function Home() {
+  const { language } = useLanguage();
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const displayCategories =
+    selectedCategory === 'all'
+      ? categories
+      : categories.filter((cat) => cat.id === selectedCategory);
+
+  const allItemsCategory: Category = {
+    id: 'all',
+    name: { en: 'All Items', te: 'అన్నీ', hi: 'सभी आइटम' },
+    products: [],
+  };
+
+  const filterButtonsCategories: Category[] = [allItemsCategory, ...categories];
+
   return (
     <>
       <Hero />
       <div id="product-section" className="container mx-auto px-4 py-12">
-        <ProductList categories={categories} />
+        <section className="mb-10">
+          <div className="flex overflow-x-auto space-x-3 pb-2 -mx-2 px-2">
+            {filterButtonsCategories.map((cat) => (
+              <Button
+                key={cat.id}
+                variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`shrink-0 ${
+                  selectedCategory === cat.id
+                    ? 'shadow-md shadow-primary/20 font-bold'
+                    : ''
+                }`}
+              >
+                {cat.id === 'all' && <LayoutGrid className="mr-2 h-4 w-4" />}
+                {cat.name[language]}
+              </Button>
+            ))}
+          </div>
+        </section>
+
+        <ProductList categories={displayCategories} />
       </div>
     </>
   );
