@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useLanguage } from '@/context/app-provider';
@@ -18,11 +19,15 @@ export function ProductList({ categories }: ProductListProps) {
           <h2 id={`category-title-${category.id}`} className="font-headline text-3xl md:text-4xl font-bold text-primary mb-6 pb-2 border-b-2 border-primary/20">
             {category.name[language]}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {category.products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {category.products.length > 0 ? (
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {category.products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+                ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">No products in this category yet.</p>
+          )}
         </section>
       ))}
     </div>

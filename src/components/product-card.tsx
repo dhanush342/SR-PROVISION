@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -7,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/app-provider';
 import type { Product } from '@/lib/data';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 interface ProductCardProps {
   product: Product;
@@ -15,7 +17,8 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { language, t } = useLanguage();
   const [selectedOption, setSelectedOption] = useState(product.options[0]);
-  const [imgSrc, setImgSrc] = useState(product.imageUrl);
+  const image = PlaceHolderImages.find(p => p.id === product.id);
+  const [imgSrc, setImgSrc] = useState(image?.imageUrl || `https://picsum.photos/seed/${product.id}/400/300`);
 
   const handleQuantityChange = (value: string) => {
     const option = product.options.find(opt => opt.quantity === value);
@@ -27,14 +30,15 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <CardHeader className="p-0">
-        <div className="overflow-hidden aspect-[4/3] bg-muted">
+        <div className="overflow-hidden aspect-[4/3] bg-muted relative">
             <Image
               src={imgSrc}
               alt={product.name[language]}
               width={400}
               height={300}
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-              onError={() => setImgSrc('https://picsum.photos/seed/placeholder/400/300')}
+              onError={() => setImgSrc(`https://picsum.photos/seed/${product.id}/400/300`)}
+              data-ai-hint={image?.imageHint}
             />
         </div>
       </CardHeader>

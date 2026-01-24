@@ -1,9 +1,10 @@
+
 'use client';
 
 import { useState } from 'react';
 import { Hero } from '@/components/hero';
 import { ProductList } from '@/components/product-list';
-import { categories, type Category } from '@/lib/data';
+import { categoriesData, getCategoriesWithProducts, type Category } from '@/lib/data';
 import { useLanguage } from '@/context/app-provider';
 import { Button } from '@/components/ui/button';
 import { LayoutGrid } from 'lucide-react';
@@ -11,32 +12,32 @@ import { LayoutGrid } from 'lucide-react';
 export default function Home() {
   const { language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const allCategories = getCategoriesWithProducts();
 
   const displayCategories =
     selectedCategory === 'all'
-      ? categories
-      : categories.filter((cat) => cat.id === selectedCategory);
+      ? allCategories
+      : allCategories.filter((cat) => cat.id === selectedCategory);
 
-  const allItemsCategory: Category = {
+  const allItemsCategory: Pick<Category, 'id' | 'name'> = {
     id: 'all',
     name: { en: 'All Items', te: 'అన్నీ', hi: 'सभी आइटम' },
-    products: [],
   };
 
-  const filterButtonsCategories: Category[] = [allItemsCategory, ...categories];
+  const filterButtonsCategories = [allItemsCategory, ...categoriesData];
 
   return (
     <>
       <Hero />
       <div id="product-section" className="container mx-auto px-4 py-12">
         <section className="mb-10">
-          <div className="flex overflow-x-auto space-x-3 pb-2 -mx-2 px-2">
+          <div className="flex overflow-x-auto space-x-3 pb-4 -mx-4 px-4">
             {filterButtonsCategories.map((cat) => (
               <Button
                 key={cat.id}
                 variant={selectedCategory === cat.id ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`shrink-0 ${
+                className={`shrink-0 transition-all duration-200 ${
                   selectedCategory === cat.id
                     ? 'shadow-md shadow-primary/20 font-bold'
                     : ''

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -35,7 +36,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { categories as staticCategories, Product } from '@/lib/data';
+import { productsData, categoriesData, type Product, type Category } from '@/lib/data';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useLanguage } from '@/context/app-provider';
 import { Badge } from '@/components/ui/badge';
 import React, { useState, useMemo, useEffect } from 'react';
@@ -72,14 +74,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-type ProductWithCategory = Product & { categoryName: string; categoryId: string };
+type ProductWithCategoryName = Product & { categoryName: string };
 
 const productFormSchema = z.object({
   nameEn: z.string().min(1, "English name is required"),
   nameTe: z.string().min(1, "Telugu name is required"),
   nameHi: z.string().min(1, "Hindi name is required"),
   categoryId: z.string().min(1, "Category is required"),
-  imageUrl: z.string().url("Please enter a valid image URL"),
   options: z.array(z.object({
     quantity: z.string().min(1, "Quantity is required"),
     price: z.coerce.number().min(0, "Price must be positive"),
@@ -97,22 +98,12 @@ export default function AdminProductsPage() {
     const [selectedStatus, setSelectedStatus] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 10;
-
-    const initialProducts = useMemo(() => 
-        staticCategories.flatMap(category => 
-            category.products.map(p => ({
-                ...p, 
-                categoryName: category.name[language],
-                categoryId: category.id,
-            }))
-        )
-    , [language]);
     
-    const [products, setProducts] = useState<ProductWithCategory[]>(initialProducts);
+    const [products, setProducts] = useState<Product[]>(productsData);
     const [isSheetOpen, setSheetOpen] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<ProductWithCategory | null>(null);
-    const [productToDelete, setProductToDelete] = useState<ProductWithCategory | null>(null);
-    const [productToView, setProductToView] = useState<ProductWithCategory | null>(null);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+    const [productToView, setProductToView] = useState<ProductWithCategoryName | null>(null);
 
     const form = useForm<ProductFormValues>({
         resolver: zodResolver(productFormSchema),
@@ -121,7 +112,6 @@ export default function AdminProductsPage() {
             nameTe: "",
             nameHi: "",
             categoryId: "",
-            imageUrl: "",
             options: [{ quantity: "", price: 0 }],
         },
     });
@@ -132,39 +122,47 @@ export default function AdminProductsPage() {
     });
 
     useEffect(() => {
-        if (editingProduct) {
-            form.reset({
-                nameEn: editingProduct.name.en,
-                nameTe: editingProduct.name.te,
-                nameHi: editingProduct.name.hi,
-                categoryId: editingProduct.categoryId,
-                imageUrl: editingProduct.imageUrl,
-                options: editingProduct.options,
-            });
-        } else {
-            form.reset({
-                nameEn: "",
-                nameTe: "",
-                nameHi: "",
-                categoryId: "",
-                imageUrl: "",
-                options: [{ quantity: "", price: 0 }],
-            });
+        if (isSheetOpen) {
+            if (editingProduct) {
+                form.reset({
+                    nameEn: editingProduct.name.en,
+                    nameTe: editingProduct.name.te,
+                    nameHi: editingProduct.name.hi,
+                    categoryId: editingProduct.categoryId,
+                    options: editingProduct.options,
+                });
+            } else {
+                form.reset({
+                    nameEn: "",
+                    nameTe: "",
+                    nameHi: "",
+                    categoryId: "",
+                    options: [{ quantity: "", price: 0 }],
+                });
+            }
         }
-    }, [editingProduct, form]);
+    }, [isSheetOpen, editingProduct, form]);
 
+    const productsWithCategory: ProductWithCategoryName[] = useMemo(() => {
+        const categoryMap = new Map(categoriesData.map(c => [c.id, c.name[language]]));
+        return products.map(p => ({
+            ...p,
+            categoryName: categoryMap.get(p.categoryId) || "Unknown"
+        }));
+    }, [products, language]);
+    
     const filteredProducts = useMemo(() => {
-        const categoryMap = new Map(staticCategories.map(c => [c.id, c.name[language]]));
-        return products
-            .map(p => ({...p, categoryName: categoryMap.get(p.categoryId) || p.categoryName }))
+        return productsWithCategory
             .filter(product => {
                 const query = searchQuery.toLowerCase();
                 const nameEn = product.name.en || '';
                 const nameTe = product.name.te || '';
+                const nameHi = product.name.hi || '';
                 
                 return (
                     nameEn.toLowerCase().includes(query) ||
-                    nameTe.toLowerCase().includes(query)
+                    nameTe.toLowerCase().includes(query) ||
+                    nameHi.toLowerCase().includes(query)
                 );
             })
             .filter(product => {
@@ -173,12 +171,10 @@ export default function AdminProductsPage() {
             .filter(product => {
                 return selectedStatus === 'all' || (product.availability === selectedStatus);
             });
-    }, [products, searchQuery, selectedCategory, selectedStatus, language]);
+    }, [productsWithCategory, searchQuery, selectedCategory, selectedStatus]);
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const currentProducts = filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
     const handlePageChange = (page: number) => {
         if (page > 0 && page <= totalPages) {
@@ -211,34 +207,26 @@ export default function AdminProductsPage() {
         setSheetOpen(true);
     };
 
-    const handleEdit = (product: ProductWithCategory) => {
+    const handleEdit = (product: Product) => {
         setEditingProduct(product);
         setSheetOpen(true);
     };
     
     function onSubmit(data: ProductFormValues) {
-        const categoryName = staticCategories.find(c => c.id === data.categoryId)?.name[language] || '';
-
         if (editingProduct) {
-            // Update existing product
-            const updatedProduct: ProductWithCategory = {
+            const updatedProduct: Product = {
                 ...editingProduct,
                 name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
                 categoryId: data.categoryId,
-                categoryName: categoryName,
-                imageUrl: data.imageUrl,
                 options: data.options,
             };
             setProducts(products.map(p => p.id === editingProduct.id ? updatedProduct : p));
             toast({ title: "Product Updated!", description: `${data.nameEn} has been updated.` });
         } else {
-            // Add new product
-            const newProduct: ProductWithCategory = {
+            const newProduct: Product = {
                 id: `prod-${Date.now()}`,
                 name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
                 categoryId: data.categoryId,
-                categoryName: categoryName,
-                imageUrl: data.imageUrl,
                 options: data.options,
                 availability: 'in-stock',
             };
@@ -246,14 +234,13 @@ export default function AdminProductsPage() {
             toast({ title: "Product Added!", description: `${data.nameEn} has been added.` });
         }
         setSheetOpen(false);
-        setEditingProduct(null);
     }
     
     const handleExportCSV = () => {
         const csvHeader = "ID,Name (EN),Name (TE),Name (HI),Category,Availability,Pricing Variants\n";
         const csvRows = filteredProducts.map(p => {
             const options = p.options.map(o => `${o.quantity}:${o.price}`).join(' | ');
-            return `${p.id},"${p.name.en}","${p.name.te}","${p.name.hi}","${p.categoryName}",${p.availability},"${options}"`;
+            return `"${p.id}","${p.name.en}","${p.name.te}","${p.name.hi}","${p.categoryName}","${p.availability}","${options}"`;
         }).join('\n');
 
         const csvString = `${csvHeader}${csvRows}`;
@@ -269,66 +256,21 @@ export default function AdminProductsPage() {
         toast({ title: "Exported to CSV!", description: "Product list has been downloaded." });
     };
 
-    const renderPageNumbers = () => {
-        const pageNumbers = [];
-        const maxPagesToShow = 3;
-        
-        if (totalPages <= 1) return null;
-
-        if (totalPages <= maxPagesToShow + 2) {
-            for (let i = 1; i <= totalPages; i++) {
-                pageNumbers.push(i);
-            }
-        } else {
-            if (currentPage <= maxPagesToShow) {
-                for (let i = 1; i <= maxPagesToShow + 1; i++) {
-                    pageNumbers.push(i);
-                }
-                pageNumbers.push('...');
-                pageNumbers.push(totalPages);
-            } else if (currentPage > totalPages - maxPagesToShow) {
-                pageNumbers.push(1);
-                pageNumbers.push('...');
-                for (let i = totalPages - maxPagesToShow; i <= totalPages; i++) {
-                    pageNumbers.push(i);
-                }
-            } else {
-                pageNumbers.push(1);
-                pageNumbers.push('...');
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                    pageNumbers.push(i);
-                }
-                pageNumbers.push('...');
-                pageNumbers.push(totalPages);
-            }
-        }
-
-        return pageNumbers.map((number, index) =>
-            typeof number === 'number' ? (
-                <Button key={index} variant={currentPage === number ? "default" : "ghost"} size="sm" onClick={() => handlePageChange(number)}>
-                    {number}
-                </Button>
-            ) : (
-                <span key={index} className="px-2 py-1 text-sm">...</span>
-            )
-        );
-    };
-
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Inventory &amp; Products</h1>
           <p className="text-muted-foreground">Manage stock, prices, and catalog visibility.</p>
         </div>
-        <div className="flex gap-2 mt-4 sm:mt-0">
+        <div className="flex gap-2 self-end sm:self-center">
           <Button variant="outline" onClick={handleExportCSV}>
             <Upload className="mr-2 h-4 w-4" />
-            Export CSV
+            Export
           </Button>
           <Button onClick={handleAddNew}>
             <Plus className="mr-2 h-4 w-4" />
-            Add New Product
+            Add Product
           </Button>
         </div>
       </div>
@@ -337,7 +279,7 @@ export default function AdminProductsPage() {
             <div className="relative w-full sm:max-w-xs">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-                placeholder="Search by product name, telugu name..."
+                placeholder="Search by product name..."
                 className="pl-8 bg-background"
                 value={searchQuery}
                 onChange={(e) => { setCurrentPage(1); setSearchQuery(e.target.value); }}
@@ -349,7 +291,7 @@ export default function AdminProductsPage() {
             </SelectTrigger>
             <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                {staticCategories.map((cat) => ( <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem> ))}
+                {categoriesData.map((cat) => ( <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem> ))}
             </SelectContent>
             </Select>
             <Select value={selectedStatus} onValueChange={(value) => { setCurrentPage(1); setSelectedStatus(value); }}>
@@ -364,28 +306,30 @@ export default function AdminProductsPage() {
             </Select>
         </div>
 
-        <div className="border rounded-lg">
+        <div className="border rounded-lg overflow-x-auto">
             <Table>
             <TableHeader>
                 <TableRow>
-                <TableHead>Product Name</TableHead>
+                <TableHead className="w-[300px]">Product Name</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Pricing Variants (Qty - Price)</TableHead>
+                <TableHead>Pricing</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {currentProducts.length > 0 ? currentProducts.map((product) => (
+                {currentProducts.length > 0 ? currentProducts.map((product) => {
+                    const image = PlaceHolderImages.find(p => p.id === product.id);
+                    return (
                     <TableRow key={product.id}>
                     <TableCell className="font-medium">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-md overflow-hidden bg-muted flex-shrink-0">
-                                <Image src={product.imageUrl} alt={product.name.en} width={48} height={48} className="object-cover w-full h-full" onError={(e) => { e.currentTarget.src = 'https://picsum.photos/seed/error/48/48' }}/>
+                                <Image src={image?.imageUrl || `https://picsum.photos/seed/${product.id}/48`} alt={product.name.en} width={48} height={48} className="object-cover w-full h-full" />
                             </div>
                             <div>
-                                <div className="font-semibold">{product.name.en}</div>
-                                <div className="text-sm text-muted-foreground">{product.name.te}</div>
+                                <div className="font-semibold line-clamp-1">{product.name.en}</div>
+                                <div className="text-sm text-muted-foreground line-clamp-1">{product.name.te}</div>
                             </div>
                         </div>
                     </TableCell>
@@ -395,7 +339,7 @@ export default function AdminProductsPage() {
                     <TableCell>
                         <div className="flex flex-wrap gap-1 items-center">
                             {product.options.map((option, index) => (
-                                <Badge key={index} variant="outline" className="font-mono text-sm">
+                                <Badge key={index} variant="outline" className="font-mono text-xs">
                                     {option.quantity} | ₹{option.price}
                                 </Badge>
                             ))}
@@ -408,7 +352,7 @@ export default function AdminProductsPage() {
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEdit(product)}>Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEdit(product)}><Eye className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setProductToView(product)}>View</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => setProductToDelete(product)}>
                                 Delete
@@ -417,7 +361,7 @@ export default function AdminProductsPage() {
                         </DropdownMenu>
                     </TableCell>
                     </TableRow>
-                )) : (
+                )}) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">No products found.</TableCell>
                   </TableRow>
@@ -427,12 +371,12 @@ export default function AdminProductsPage() {
         </div>
         <div className="flex items-center justify-between mt-4 px-2">
             <p className="text-sm text-muted-foreground">
-                Showing {filteredProducts.length > 0 ? indexOfFirstProduct + 1 : 0} - {Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} products
+                Showing {filteredProducts.length > 0 ? (currentPage-1) * productsPerPage + 1 : 0} - {Math.min(currentPage * productsPerPage, filteredProducts.length)} of {filteredProducts.length} products
             </p>
             {totalPages > 1 && (
                 <div className="flex items-center gap-1">
                     <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft className="h-4 w-4"/></Button>
-                    {renderPageNumbers()}
+                    <span className="text-sm font-medium">{currentPage} / {totalPages}</span>
                     <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}><ChevronRight className="h-4 w-4"/></Button>
                 </div>
             )}
@@ -442,12 +386,12 @@ export default function AdminProductsPage() {
         <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
             <SheetContent className="sm:max-w-lg">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full">
                         <SheetHeader>
                             <SheetTitle>{editingProduct ? "Edit Product" : "Add New Product"}</SheetTitle>
                             <SheetDescription>{editingProduct ? "Update the product details." : "Fill out the details for the new product."}</SheetDescription>
                         </SheetHeader>
-                        <ScrollArea className="h-[calc(100vh-150px)] pr-6">
+                        <ScrollArea className="h-[calc(100vh-150px)] pr-6 -mr-6">
                         <div className="grid gap-4 py-4">
                             <FormField control={form.control} name="nameEn" render={({ field }) => (
                                 <FormItem><FormLabel>Product Name (EN)</FormLabel><FormControl><Input placeholder="e.g., Toor Dal" {...field} /></FormControl><FormMessage /></FormItem>
@@ -462,12 +406,9 @@ export default function AdminProductsPage() {
                                 <FormItem><FormLabel>Category</FormLabel>
                                     <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl><SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
-                                        <SelectContent>{staticCategories.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem>)}</SelectContent>
+                                        <SelectContent>{categoriesData.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem>)}</SelectContent>
                                     </Select><FormMessage />
                                 </FormItem>
-                            )}/>
-                             <FormField control={form.control} name="imageUrl" render={({ field }) => (
-                                <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input placeholder="https://example.com/image.jpg" {...field} /></FormControl><FormMessage /></FormItem>
                             )}/>
                             <div>
                                 <FormLabel>Pricing Variants</FormLabel>
@@ -477,16 +418,17 @@ export default function AdminProductsPage() {
                                             <FormItem className="flex-1"><FormControl><Input placeholder="e.g., 500g" {...field} /></FormControl><FormMessage/></FormItem>
                                         )}/>
                                         <FormField control={form.control} name={`options.${index}.price`} render={({ field }) => (
-                                            <FormItem className="flex-1"><FormControl><Input type="number" placeholder="Price (₹)" {...field} /></FormControl><FormMessage/></FormItem>
+                                            <FormItem className="w-28"><FormControl><Input type="number" placeholder="Price (₹)" {...field} /></FormControl><FormMessage/></FormItem>
                                         )}/>
                                         <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} disabled={fields.length <= 1}><X className="h-4 w-4" /></Button>
                                     </div>
                                 ))}
                                 <Button type="button" variant="outline" size="sm" className="mt-2" onClick={() => append({ quantity: '', price: 0 })}><Plus className="mr-2 h-4 w-4" /> Add Variant</Button>
+                                <FormMessage>{form.formState.errors.options?.root?.message}</FormMessage>
                             </div>
                         </div>
                         </ScrollArea>
-                        <SheetFooter>
+                        <SheetFooter className="pt-4 border-t">
                             <SheetClose asChild><Button type="button" variant="secondary">Cancel</Button></SheetClose>
                             <Button type="submit">{editingProduct ? "Save Changes" : "Save Product"}</Button>
                         </SheetFooter>
@@ -516,7 +458,7 @@ export default function AdminProductsPage() {
                 </DialogHeader>
                 <div className="mt-4 grid gap-4">
                     <div className="w-full h-48 rounded-md overflow-hidden bg-muted relative">
-                        {productToView && <Image src={productToView.imageUrl} alt={productToView.name.en} layout="fill" objectFit="cover" onError={(e) => { e.currentTarget.src = 'https://picsum.photos/seed/error/400/300' }}/>}
+                        {productToView && <Image src={PlaceHolderImages.find(p => p.id === productToView.id)?.imageUrl || `https://picsum.photos/seed/${productToView.id}/400`} alt={productToView.name.en} fill objectFit="cover" />}
                     </div>
                     <div className="text-sm"><strong>Category:</strong> <Badge variant="secondary">{productToView?.categoryName}</Badge></div>
                     <div className="text-sm"><strong>Status:</strong> <Badge variant={productToView?.availability === 'in-stock' ? 'secondary' : 'destructive'}>{productToView?.availability}</Badge></div>
