@@ -1,8 +1,9 @@
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import type { Language } from '@/lib/data';
+import { Language, Product, Category as CategoryType, Customer } from '@/lib/data';
 import { translations } from '@/lib/translations';
+import { productsData, categoriesData, customersData } from '@/lib/data';
 
 // --- Language Context ---
 type LanguageContextType = {
@@ -12,20 +13,6 @@ type LanguageContextType = {
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('en');
-
-  const t = (key: keyof typeof translations.en) => {
-    return translations[language][key] || translations.en[key];
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
@@ -39,16 +26,64 @@ export const useLanguage = () => {
 type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string) => void;
+  login: (email: string, pass: string) => void;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+// --- Store Context ---
+type StoreContextType = {
+    products: Product[];
+    categories: CategoryType[];
+    customers: Customer[];
+    addProduct: (product: Product) => void;
+    updateProduct: (product: Product) => void;
+    deleteProduct: (productId: string) => void;
+    addCategory: (category: CategoryType) => void;
+    updateCategory: (category: CategoryType) => void;
+    deleteCategory: (categoryId: string) => void;
+    addCustomer: (customer: Customer) => void;
+    updateCustomer: (customer: Customer) => void;
+    deleteCustomer: (customerId: string) => void;
+    getCategoriesWithProducts: () => (CategoryType & { products: Product[] })[];
+};
+
+const StoreContext = createContext<StoreContextType | undefined>(undefined);
+
+export const useStore = () => {
+    const context = useContext(StoreContext);
+    if (context === undefined) {
+        throw new Error('useStore must be used within a StoreProvider');
+    }
+    return context;
+};
+
+// --- Combined App Provider ---
+export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const [language, setLanguage] = useState<Language>('en');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Store state
+  const [products, setProducts] = useState<Product[]>(productsData);
+  const [categories, setCategories] = useState<CategoryType[]>(categoriesData);
+  const [customers, setCustomers] = useState<Customer[]>(customersData);
+
+  // Language Logic
+  const t = (key: keyof typeof translations.en) => {
+    return translations[language][key] || translations.en[key];
+  };
+
+  // Auth Logic
   useEffect(() => {
     try {
       const storedAuth = sessionStorage.getItem('isAuthenticated');
@@ -71,12 +106,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated, isLoading]);
 
-
-  const login = (email: string) => {
-    // In a real app, you'd validate credentials against a backend.
-    // Here we just check if the email matches the owner's email.
-    if (email === 'dhanushnaginane@gmail.com') {
-      setIsAuthenticated(true);
+  const login = (email: string, pass: string) => {
+    if (email === "dhanushnaginane@gmail.com" && pass === "Srinu@14111707") {
+        setIsAuthenticated(true);
     } else {
         throw new Error("Invalid credentials");
     }
@@ -85,29 +117,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setIsAuthenticated(false);
   };
+  
+  // Store Logic
+  const addProduct = (product: Product) => setProducts(prev => [product, ...prev]);
+  const updateProduct = (product: Product) => setProducts(prev => prev.map(p => p.id === product.id ? product : p));
+  const deleteProduct = (productId: string) => setProducts(prev => prev.filter(p => p.id !== productId));
+  
+  const addCategory = (category: CategoryType) => setCategories(prev => [category, ...prev]);
+  const updateCategory = (category: CategoryType) => setCategories(prev => prev.map(c => c.id === category.id ? category : c));
+  const deleteCategory = (categoryId: string) => {
+    // Also un-categorize products in the deleted category
+    setProducts(prev => prev.map(p => p.categoryId === categoryId ? {...p, categoryId: 'uncategorized'} : p));
+    setCategories(prev => prev.filter(c => c.id !== categoryId));
+  };
+
+  const addCustomer = (customer: Customer) => setCustomers(prev => [customer, ...prev]);
+  const updateCustomer = (customer: Customer) => setCustomers(prev => prev.map(c => c.id === customer.id ? customer : c));
+  const deleteCustomer = (customerId: string) => setCustomers(prev => prev.filter(c => c.id !== customerId));
+  
+  const getCategoriesWithProducts = () => {
+    const categoryMap = new Map<string, Product[]>();
+    products.forEach(p => {
+        if (!categoryMap.has(p.categoryId)) {
+            categoryMap.set(p.categoryId, []);
+        }
+        categoryMap.get(p.categoryId)!.push(p);
+    });
+
+    return categories.map(cat => ({
+        ...cat,
+        products: categoryMap.get(cat.id) || []
+    })).sort((a,b) => a.id === 'uncategorized' ? 1 : b.id === 'uncategorized' ? -1 : 0);
+  };
+
+  const languageContextValue: LanguageContextType = { language, setLanguage, t };
+  const authContextValue: AuthContextType = { isAuthenticated, isLoading, login, logout };
+  const storeContextValue: StoreContextType = { 
+    products, categories, customers,
+    addProduct, updateProduct, deleteProduct,
+    addCategory, updateCategory, deleteCategory,
+    addCustomer, updateCustomer, deleteCustomer,
+    getCategoriesWithProducts
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
-// --- App Provider ---
-export const AppProvider = ({ children }: { children: ReactNode }) => {
-  return (
-    <LanguageProvider>
-      <AuthProvider>
-        {children}
-      </AuthProvider>
-    </LanguageProvider>
+    <LanguageContext.Provider value={languageContextValue}>
+      <AuthContext.Provider value={authContextValue}>
+        <StoreContext.Provider value={storeContextValue}>
+            {children}
+        </StoreContext.Provider>
+      </AuthContext.Provider>
+    </LanguageContext.Provider>
   );
 };

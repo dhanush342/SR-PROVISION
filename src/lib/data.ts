@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'te' | 'hi';
 
 export type TranslatedString = {
@@ -21,10 +20,19 @@ export type Product = {
 export type Category = {
   id: string;
   name: TranslatedString;
-  products: Product[];
 };
 
-export const categoriesData: Omit<Category, 'products'>[] = [
+export type Customer = {
+    id: string;
+    name: string;
+    email: string;
+    joinDate: string;
+    totalOrders: number;
+    isLoyal: boolean;
+    initials: string;
+};
+
+export const categoriesData: Category[] = [
     { id: 'dals', name: { en: 'Dals & Pulses', te: 'పప్పులు & పప్పుధాన్యాలు', hi: 'दालें और दलहन' } },
     { id: 'rice', name: { en: 'Rice & Grains', te: 'బియ్యం & ధాన్యాలు', hi: 'चावल और अनाज' } },
     { id: 'spices', name: { en: 'Spices & Masalas', te: 'మసాలా దినుసులు', hi: 'मसाले' } },
@@ -34,6 +42,7 @@ export const categoriesData: Omit<Category, 'products'>[] = [
 ];
 
 export const productsData: Product[] = [
+  // Dals
   {
     id: 'toor-dal-1',
     name: { en: 'Toor Dal', te: 'కంది పప్పు', hi: 'अरहर की दाल' },
@@ -104,6 +113,7 @@ export const productsData: Product[] = [
     availability: 'out-of-stock',
     categoryId: 'dals',
   },
+  // Rice
   {
     id: 'sona-masoori-11',
     name: { en: 'Sona Masoori Rice', te: 'సోనా మసూరి బియ్యం', hi: 'सोना मसूरी चावल' },
@@ -174,6 +184,7 @@ export const productsData: Product[] = [
     availability: 'in-stock',
     categoryId: 'rice',
   },
+  // Spices
   {
     id: 'turmeric-powder-21',
     name: { en: 'Turmeric Powder', te: 'పసుపు', hi: 'हल्दी पाउडर' },
@@ -244,6 +255,7 @@ export const productsData: Product[] = [
     availability: 'in-stock',
     categoryId: 'spices',
   },
+  // Cooking Essentials
   {
     id: 'tamarind-31',
     name: { en: 'Tamarind', te: 'చింతపండు', hi: 'इमली' },
@@ -314,6 +326,7 @@ export const productsData: Product[] = [
     availability: 'in-stock',
     categoryId: 'cooking_essentials',
   },
+  // Oils
   {
     id: 'sunflower-oil-41',
     name: { en: 'Sunflower Oil', te: 'పొద్దుతిరుగుడు నూనె', hi: 'सूरजमुखी तेल' },
@@ -384,6 +397,7 @@ export const productsData: Product[] = [
     availability: 'in-stock',
     categoryId: 'oils',
   },
+  // Essentials
   {
     id: 'atta-flour-51',
     name: { en: 'Whole Wheat Atta', te: 'గోధుమ పిండి', hi: 'आटा' },
@@ -457,10 +471,10 @@ export const productsData: Product[] = [
 ];
 
 
-// Function to combine categories and products
-export function getCategoriesWithProducts(): Category[] {
-    return categoriesData.map(categoryInfo => ({
-        ...categoryInfo,
-        products: productsData.filter(product => product.categoryId === categoryInfo.id)
-    }));
-}
+export const customersData: Customer[] = [
+    { id: 'cus-1', name: 'Ravi Kumar', email: 'ravi.k@example.com', joinDate: '2022-03-15', totalOrders: 45, isLoyal: true, initials: 'RK' },
+    { id: 'cus-2', name: 'Priya Sharma', email: 'priya.s@example.com', joinDate: '2023-01-20', totalOrders: 22, isLoyal: true, initials: 'PS' },
+    { id: 'cus-3', name: 'Amit Singh', email: 'amit.s@example.com', joinDate: '2023-08-10', totalOrders: 8, isLoyal: false, initials: 'AS' },
+    { id: 'cus-4', name: 'Lakshmi Devi', email: 'lakshmi.d@example.com', joinDate: '2021-11-05', totalOrders: 78, isLoyal: true, initials: 'LD' },
+    { id: 'cus-5', name: 'Sanjay Reddy', email: 'sanjay.r@example.com', joinDate: '2024-02-01', totalOrders: 3, isLoyal: false, initials: 'SR' },
+];

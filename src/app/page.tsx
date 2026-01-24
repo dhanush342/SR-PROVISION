@@ -4,27 +4,29 @@
 import { useState } from 'react';
 import { Hero } from '@/components/hero';
 import { ProductList } from '@/components/product-list';
-import { categoriesData, getCategoriesWithProducts, type Category } from '@/lib/data';
-import { useLanguage } from '@/context/app-provider';
+import { useLanguage, useStore } from '@/context/app-provider';
+import type { Category } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { LayoutGrid } from 'lucide-react';
 
 export default function Home() {
   const { language } = useLanguage();
+  const { getCategoriesWithProducts, categories } = useStore();
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const allCategories = getCategoriesWithProducts();
+  
+  const allCategoriesWithProducts = getCategoriesWithProducts();
 
   const displayCategories =
     selectedCategory === 'all'
-      ? allCategories
-      : allCategories.filter((cat) => cat.id === selectedCategory);
+      ? allCategoriesWithProducts
+      : allCategoriesWithProducts.filter((cat) => cat.id === selectedCategory);
 
   const allItemsCategory: Pick<Category, 'id' | 'name'> = {
     id: 'all',
     name: { en: 'All Items', te: 'అన్నీ', hi: 'सभी आइटम' },
   };
 
-  const filterButtonsCategories = [allItemsCategory, ...categoriesData];
+  const filterButtonsCategories = [allItemsCategory, ...categories];
 
   return (
     <>

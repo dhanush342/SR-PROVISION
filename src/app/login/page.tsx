@@ -27,8 +27,8 @@ export default function LoginPage() {
   const { toast } = useToast();
 
   const formSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(1, { message: "Password is required" }),
+    email: z.string().email({ message: "Please enter a valid email." }),
+    password: z.string().min(1, { message: "Password is required." }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,15 +47,17 @@ export default function LoginPage() {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     try {
-        if (values.email !== "dhanushnaginane@gmail.com" || values.password !== "Srinu@14111707") {
-            throw new Error("Invalid credentials");
-        }
-        login(values.email);
+        login(values.email, values.password);
+        toast({
+          title: "Login Successful!",
+          description: "Welcome to the admin panel.",
+        });
         router.push("/admin");
     } catch (error) {
       toast({
         variant: "destructive",
         title: t('invalidCredentials'),
+        description: "Please check your email and password and try again."
       });
     }
   };
@@ -120,7 +122,7 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
+              <Button type="submit" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={form.formState.isSubmitting}>
                 {t('login')}
               </Button>
             </form>

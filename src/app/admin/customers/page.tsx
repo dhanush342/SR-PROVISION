@@ -1,82 +1,43 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
+import React, { useState } from 'react';
+import { useStore } from "@/context/app-provider";
+import { useToast } from "@/hooks/use-toast";
+import type { Customer } from "@/lib/data";
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MoreVertical, Plus } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import React, { useState } from 'react';
-import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
-type Customer = {
-    id: string;
-    name: string;
-    email: string;
-    joinDate: string;
-    totalOrders: number;
-    isLoyal: boolean;
-    initials: string;
-};
-
-const initialCustomers: Customer[] = [
-    { id: 'cus-1', name: 'Ravi Kumar', email: 'ravi.k@example.com', joinDate: '2022-03-15', totalOrders: 45, isLoyal: true, initials: 'RK' },
-    { id: 'cus-2', name: 'Priya Sharma', email: 'priya.s@example.com', joinDate: '2023-01-20', totalOrders: 22, isLoyal: true, initials: 'PS' },
-    { id: 'cus-3', name: 'Amit Singh', email: 'amit.s@example.com', joinDate: '2023-08-10', totalOrders: 8, isLoyal: false, initials: 'AS' },
-    { id: 'cus-4', name: 'Lakshmi Devi', email: 'lakshmi.d@example.com', joinDate: '2021-11-05', totalOrders: 78, isLoyal: true, initials: 'LD' },
-    { id: 'cus-5', name: 'Sanjay Reddy', email: 'sanjay.r@example.com', joinDate: '2024-02-01', totalOrders: 3, isLoyal: false, initials: 'SR' },
-];
 
 export default function CustomersPage() {
-  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+  const { customers, addCustomer, deleteCustomer } = useStore();
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(null);
   const { toast } = useToast();
 
   const handleAddCustomer = () => {
-    // This is a placeholder for a proper "Add Customer" form.
     const newId = `cus-${Date.now()}`;
     const newCustomer: Customer = {
         id: newId,
         name: 'New Customer',
-        email: `new.${newId}@example.com`,
+        email: `new.${Date.now()}@example.com`,
         joinDate: new Date().toISOString().split('T')[0],
         totalOrders: 0,
         isLoyal: false,
         initials: 'NC'
     };
-    setCustomers(current => [newCustomer, ...current]);
-    toast({ title: "Customer Added!", description: "A new customer has been added. Please edit their details." });
+    addCustomer(newCustomer);
+    toast({ title: "Customer Added!", description: "A new placeholder customer has been added. Please edit their details." });
   };
 
   const handleRemoveConfirm = () => {
     if (!customerToDelete) return;
-    setCustomers(current => current.filter(c => c.id !== customerToDelete.id));
+    deleteCustomer(customerToDelete.id);
     toast({ title: "Customer Removed!", description: `${customerToDelete.name} has been removed.`, variant: "destructive" });
     setCustomerToDelete(null);
   };
@@ -96,13 +57,17 @@ export default function CustomersPage() {
       </div>
 
       <Card>
+        <CardHeader>
+            <CardTitle>All Customers</CardTitle>
+            <CardDescription>A list of all customers in your records.</CardDescription>
+        </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Customer</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Join Date</TableHead>
+                <TableHead className="hidden sm:table-cell">Email</TableHead>
+                <TableHead className="hidden md:table-cell">Join Date</TableHead>
                 <TableHead className="text-center">Total Orders</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -116,11 +81,14 @@ export default function CustomersPage() {
                         <Avatar className="h-8 w-8">
                             <AvatarFallback>{customer.initials}</AvatarFallback>
                         </Avatar>
-                        {customer.name}
+                        <div className="flex flex-col">
+                          <span>{customer.name}</span>
+                          <span className="text-muted-foreground text-xs sm:hidden">{customer.email}</span>
+                        </div>
                     </div>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>{customer.joinDate}</TableCell>
+                  <TableCell className="hidden sm:table-cell">{customer.email}</TableCell>
+                  <TableCell className="hidden md:table-cell">{customer.joinDate}</TableCell>
                   <TableCell className="text-center">{customer.totalOrders}</TableCell>
                   <TableCell>
                     {customer.isLoyal && <Badge variant="secondary">Loyal</Badge>}
@@ -133,7 +101,7 @@ export default function CustomersPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => toast({ title: "Coming Soon!", description: "Viewing customer details is not yet implemented."})}>View Details</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast({ title: "Coming Soon!", description: "Editing customer details is not yet implemented."})}>Edit Details</DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => setCustomerToDelete(customer)}>Remove</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -144,6 +112,7 @@ export default function CustomersPage() {
           </Table>
         </CardContent>
       </Card>
+
       <AlertDialog open={!!customerToDelete} onOpenChange={(open) => !open && setCustomerToDelete(null)}>
         <AlertDialogContent>
             <AlertDialogHeader>

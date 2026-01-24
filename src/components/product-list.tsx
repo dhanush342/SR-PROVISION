@@ -2,11 +2,21 @@
 'use client';
 
 import { useLanguage } from '@/context/app-provider';
-import type { Category } from '@/lib/data';
+import type { Product } from '@/lib/data';
 import { ProductCard } from './product-card';
 
+interface CategoryWithProducts {
+    id: string;
+    name: {
+        en: string;
+        te: string;
+        hi: string;
+    };
+    products: Product[];
+}
+
 interface ProductListProps {
-  categories: Category[];
+  categories: CategoryWithProducts[];
 }
 
 export function ProductList({ categories }: ProductListProps) {

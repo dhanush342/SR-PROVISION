@@ -1,78 +1,30 @@
-
 "use client";
 
 import Image from 'next/image';
-import {
-  MoreVertical,
-  Search,
-  Upload,
-  Plus,
-  ChevronLeft,
-  ChevronRight,
-  X,
-  Eye,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { productsData, categoriesData, type Product, type Category } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { useLanguage } from '@/context/app-provider';
-import { Badge } from '@/components/ui/badge';
 import React, { useState, useMemo, useEffect } from 'react';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-  SheetClose,
-} from '@/components/ui/sheet';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
+import { MoreVertical, Search, Upload, Plus, ChevronLeft, ChevronRight, X, Edit, Eye, Trash2 } from 'lucide-react';
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+import { useLanguage, useStore } from '@/context/app-provider';
+import type { Product, Category } from '@/lib/data';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from "@/hooks/use-toast";
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
 
 type ProductWithCategoryName = Product & { categoryName: string };
 
@@ -83,7 +35,7 @@ const productFormSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   options: z.array(z.object({
     quantity: z.string().min(1, "Quantity is required"),
-    price: z.coerce.number().min(0, "Price must be positive"),
+    price: z.coerce.number().min(0.01, "Price must be greater than 0"),
   })).min(1, "At least one pricing option is required"),
 });
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -92,6 +44,7 @@ type ProductFormValues = z.infer<typeof productFormSchema>;
 export default function AdminProductsPage() {
     const { language } = useLanguage();
     const { toast } = useToast();
+    const { products, categories, addProduct, updateProduct, deleteProduct } = useStore();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
@@ -99,7 +52,6 @@ export default function AdminProductsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 10;
     
-    const [products, setProducts] = useState<Product[]>(productsData);
     const [isSheetOpen, setSheetOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
@@ -107,13 +59,7 @@ export default function AdminProductsPage() {
 
     const form = useForm<ProductFormValues>({
         resolver: zodResolver(productFormSchema),
-        defaultValues: {
-            nameEn: "",
-            nameTe: "",
-            nameHi: "",
-            categoryId: "",
-            options: [{ quantity: "", price: 0 }],
-        },
+        defaultValues: { nameEn: "", nameTe: "", nameHi: "", categoryId: "", options: [{ quantity: "", price: 0 }] },
     });
 
     const { fields, append, remove } = useFieldArray({
@@ -132,45 +78,32 @@ export default function AdminProductsPage() {
                     options: editingProduct.options,
                 });
             } else {
-                form.reset({
-                    nameEn: "",
-                    nameTe: "",
-                    nameHi: "",
-                    categoryId: "",
-                    options: [{ quantity: "", price: 0 }],
-                });
+                form.reset({ nameEn: "", nameTe: "", nameHi: "", categoryId: "", options: [{ quantity: "", price: 0 }] });
             }
         }
     }, [isSheetOpen, editingProduct, form]);
 
     const productsWithCategory: ProductWithCategoryName[] = useMemo(() => {
-        const categoryMap = new Map(categoriesData.map(c => [c.id, c.name[language]]));
+        const categoryMap = new Map(categories.map(c => [c.id, c.name[language]]));
+        categoryMap.set('uncategorized', 'Uncategorized');
         return products.map(p => ({
             ...p,
-            categoryName: categoryMap.get(p.categoryId) || "Unknown"
+            categoryName: categoryMap.get(p.categoryId) || "Uncategorized"
         }));
-    }, [products, language]);
+    }, [products, categories, language]);
     
     const filteredProducts = useMemo(() => {
         return productsWithCategory
             .filter(product => {
                 const query = searchQuery.toLowerCase();
-                const nameEn = product.name.en || '';
-                const nameTe = product.name.te || '';
-                const nameHi = product.name.hi || '';
-                
                 return (
-                    nameEn.toLowerCase().includes(query) ||
-                    nameTe.toLowerCase().includes(query) ||
-                    nameHi.toLowerCase().includes(query)
+                    product.name.en.toLowerCase().includes(query) ||
+                    product.name.te.toLowerCase().includes(query) ||
+                    product.name.hi.toLowerCase().includes(query)
                 );
             })
-            .filter(product => {
-                return selectedCategory === 'all' || product.categoryId === selectedCategory;
-            })
-            .filter(product => {
-                return selectedStatus === 'all' || (product.availability === selectedStatus);
-            });
+            .filter(product => selectedCategory === 'all' || product.categoryId === selectedCategory)
+            .filter(product => selectedStatus === 'all' || product.availability === selectedStatus);
     }, [productsWithCategory, searchQuery, selectedCategory, selectedStatus]);
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -183,21 +116,16 @@ export default function AdminProductsPage() {
     };
     
     const handleStatusChange = (productId: string, checked: boolean) => {
-        setProducts(currentProducts => 
-            currentProducts.map(p => 
-                p.id === productId 
-                ? { ...p, availability: checked ? 'in-stock' : 'out-of-stock' } 
-                : p
-            )
-        );
-        toast({ title: "Status updated!" });
+        const product = products.find(p => p.id === productId);
+        if(product) {
+            updateProduct({ ...product, availability: checked ? 'in-stock' : 'out-of-stock' });
+            toast({ title: "Status updated!", description: `${product.name.en} is now ${checked ? 'in stock' : 'out of stock'}.` });
+        }
     };
 
     const handleDeleteConfirm = () => {
         if (!productToDelete) return;
-        setProducts(currentProducts => 
-            currentProducts.filter(p => p.id !== productToDelete.id)
-        );
+        deleteProduct(productToDelete.id);
         toast({ title: "Product deleted!", description: `${productToDelete.name.en} has been removed.`, variant: "destructive" });
         setProductToDelete(null);
     };
@@ -214,14 +142,14 @@ export default function AdminProductsPage() {
     
     function onSubmit(data: ProductFormValues) {
         if (editingProduct) {
-            const updatedProduct: Product = {
+            const updated: Product = {
                 ...editingProduct,
                 name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
                 categoryId: data.categoryId,
                 options: data.options,
             };
-            setProducts(products.map(p => p.id === editingProduct.id ? updatedProduct : p));
-            toast({ title: "Product Updated!", description: `${data.nameEn} has been updated.` });
+            updateProduct(updated);
+            toast({ title: "Product Updated!", description: `"${data.nameEn}" has been updated.` });
         } else {
             const newProduct: Product = {
                 id: `prod-${Date.now()}`,
@@ -230,13 +158,17 @@ export default function AdminProductsPage() {
                 options: data.options,
                 availability: 'in-stock',
             };
-            setProducts(currentProducts => [newProduct, ...currentProducts]);
-            toast({ title: "Product Added!", description: `${data.nameEn} has been added.` });
+            addProduct(newProduct);
+            toast({ title: "Product Added!", description: `"${data.nameEn}" has been added.` });
         }
         setSheetOpen(false);
     }
     
     const handleExportCSV = () => {
+        if (filteredProducts.length === 0) {
+            toast({ title: "Nothing to Export", description: "There are no products in the current view.", variant: 'destructive' });
+            return;
+        }
         const csvHeader = "ID,Name (EN),Name (TE),Name (HI),Category,Availability,Pricing Variants\n";
         const csvRows = filteredProducts.map(p => {
             const options = p.options.map(o => `${o.quantity}:${o.price}`).join(' | ');
@@ -260,7 +192,7 @@ export default function AdminProductsPage() {
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Inventory &amp; Products</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Inventory & Products</h1>
           <p className="text-muted-foreground">Manage stock, prices, and catalog visibility.</p>
         </div>
         <div className="flex gap-2 self-end sm:self-center">
@@ -291,7 +223,8 @@ export default function AdminProductsPage() {
             </SelectTrigger>
             <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                {categoriesData.map((cat) => ( <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem> ))}
+                {categories.map((cat) => ( <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem> ))}
+                 <SelectItem value="uncategorized">Uncategorized</SelectItem>
             </SelectContent>
             </Select>
             <Select value={selectedStatus} onValueChange={(value) => { setCurrentPage(1); setSelectedStatus(value); }}>
@@ -346,16 +279,16 @@ export default function AdminProductsPage() {
                         </div>
                     </TableCell>
                     <TableCell>
-                        <Switch checked={product.availability === 'in-stock'} onCheckedChange={(checked) => handleStatusChange(product.id, checked)} />
+                        <Switch checked={product.availability === 'in-stock'} onCheckedChange={(checked) => handleStatusChange(product.id, checked)} aria-label={`Toggle status for ${product.name.en}`}/>
                     </TableCell>
                     <TableCell className="text-right">
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleEdit(product)}><Eye className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setProductToView(product)}>View</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleEdit(product)}><Edit className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setProductToView(product)}><Eye className="mr-2 h-4 w-4" />View</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => setProductToDelete(product)}>
-                                Delete
+                                <Trash2 className="mr-2 h-4 w-4" />Delete
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                         </DropdownMenu>
@@ -391,7 +324,7 @@ export default function AdminProductsPage() {
                             <SheetTitle>{editingProduct ? "Edit Product" : "Add New Product"}</SheetTitle>
                             <SheetDescription>{editingProduct ? "Update the product details." : "Fill out the details for the new product."}</SheetDescription>
                         </SheetHeader>
-                        <ScrollArea className="h-[calc(100vh-150px)] pr-6 -mr-6">
+                        <ScrollArea className="h-[calc(100%-150px)] pr-6 -mr-6">
                         <div className="grid gap-4 py-4">
                             <FormField control={form.control} name="nameEn" render={({ field }) => (
                                 <FormItem><FormLabel>Product Name (EN)</FormLabel><FormControl><Input placeholder="e.g., Toor Dal" {...field} /></FormControl><FormMessage /></FormItem>
@@ -404,9 +337,9 @@ export default function AdminProductsPage() {
                             )}/>
                             <FormField control={form.control} name="categoryId" render={({ field }) => (
                                 <FormItem><FormLabel>Category</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value} defaultValue={editingProduct?.categoryId}>
                                         <FormControl><SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
-                                        <SelectContent>{categoriesData.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem>)}</SelectContent>
+                                        <SelectContent>{categories.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem>)}</SelectContent>
                                     </Select><FormMessage />
                                 </FormItem>
                             )}/>
@@ -418,7 +351,7 @@ export default function AdminProductsPage() {
                                             <FormItem className="flex-1"><FormControl><Input placeholder="e.g., 500g" {...field} /></FormControl><FormMessage/></FormItem>
                                         )}/>
                                         <FormField control={form.control} name={`options.${index}.price`} render={({ field }) => (
-                                            <FormItem className="w-28"><FormControl><Input type="number" placeholder="Price (₹)" {...field} /></FormControl><FormMessage/></FormItem>
+                                            <FormItem className="w-28"><FormControl><Input type="number" step="0.01" placeholder="Price (₹)" {...field} /></FormControl><FormMessage/></FormItem>
                                         )}/>
                                         <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} disabled={fields.length <= 1}><X className="h-4 w-4" /></Button>
                                     </div>
@@ -428,9 +361,9 @@ export default function AdminProductsPage() {
                             </div>
                         </div>
                         </ScrollArea>
-                        <SheetFooter className="pt-4 border-t">
+                        <SheetFooter className="pt-4 border-t mt-auto">
                             <SheetClose asChild><Button type="button" variant="secondary">Cancel</Button></SheetClose>
-                            <Button type="submit">{editingProduct ? "Save Changes" : "Save Product"}</Button>
+                            <Button type="submit" disabled={form.formState.isSubmitting}>{editingProduct ? "Save Changes" : "Save Product"}</Button>
                         </SheetFooter>
                     </form>
                 </Form>
@@ -451,17 +384,17 @@ export default function AdminProductsPage() {
         </AlertDialog>
 
         <Dialog open={!!productToView} onOpenChange={(open) => !open && setProductToView(null)}>
-            <DialogContent>
+            <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>{productToView?.name.en}</DialogTitle>
                     <DialogDescription>{productToView?.name.te} / {productToView?.name.hi}</DialogDescription>
                 </DialogHeader>
                 <div className="mt-4 grid gap-4">
                     <div className="w-full h-48 rounded-md overflow-hidden bg-muted relative">
-                        {productToView && <Image src={PlaceHolderImages.find(p => p.id === productToView.id)?.imageUrl || `https://picsum.photos/seed/${productToView.id}/400`} alt={productToView.name.en} fill objectFit="cover" />}
+                        {productToView && <Image src={PlaceHolderImages.find(p => p.id === productToView.id)?.imageUrl || `https://picsum.photos/seed/${productToView.id}/400`} alt={productToView.name.en} layout="fill" objectFit="cover" />}
                     </div>
                     <div className="text-sm"><strong>Category:</strong> <Badge variant="secondary">{productToView?.categoryName}</Badge></div>
-                    <div className="text-sm"><strong>Status:</strong> <Badge variant={productToView?.availability === 'in-stock' ? 'secondary' : 'destructive'}>{productToView?.availability}</Badge></div>
+                    <div className="text-sm"><strong>Status:</strong> <Badge variant={productToView?.availability === 'in-stock' ? 'default' : 'destructive'}>{productToView?.availability}</Badge></div>
                     <div>
                         <h4 className="text-sm font-semibold mb-2">Pricing:</h4>
                         <div className="flex flex-wrap gap-2">
