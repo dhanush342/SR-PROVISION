@@ -27,19 +27,20 @@ export function ProductCard({ product }: ProductCardProps) {
   const placeholder = PlaceHolderImages.find(p => p.id === product.imageId);
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <Card className="group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <CardHeader className="p-0">
-        <div className="relative aspect-[4/3] w-full">
+        <div className="overflow-hidden">
           {placeholder ? (
              <Image
               src={placeholder.imageUrl}
               alt={product.name[language]}
-              fill
-              className="object-cover"
+              width={400}
+              height={300}
+              className="object-cover w-full h-auto aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
               data-ai-hint={placeholder.imageHint}
             />
           ) : (
-             <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground">
+             <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground aspect-[4/3]">
                 No Image
              </div>
           )}

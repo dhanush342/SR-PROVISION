@@ -129,9 +129,9 @@ export default function AdminProductsPage() {
                     <TableRow key={product.id}>
                     <TableCell className="font-medium">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-md overflow-hidden relative bg-muted flex-shrink-0">
+                            <div className="w-12 h-12 rounded-md overflow-hidden bg-muted flex-shrink-0">
                                 {placeholder && (
-                                    <Image src={placeholder.imageUrl} alt={product.name[language]} fill className="object-cover"/>
+                                    <Image src={placeholder.imageUrl} alt={product.name[language]} width={48} height={48} className="object-cover w-full h-full"/>
                                 )}
                             </div>
                             <div>

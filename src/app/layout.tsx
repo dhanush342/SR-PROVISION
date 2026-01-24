@@ -5,6 +5,20 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
+import { Alegreya, Belleza } from 'next/font/google';
+
+const alegreya = Alegreya({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-alegreya',
+});
+
+const belleza = Belleza({
+  subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
+  variable: '--font-belleza',
+});
 
 export const metadata: Metadata = {
   title: 'Srinivasa Rao Provision - Quality Groceries',
@@ -19,9 +33,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Belleza&display=swap" rel="stylesheet" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -43,7 +54,7 @@ export default function RootLayout({
           }) }}
         />
       </head>
-      <body className={cn('font-body antialiased min-h-screen flex flex-col')}>
+      <body className={cn('font-body antialiased min-h-screen flex flex-col', alegreya.variable, belleza.variable)}>
         <AppProvider>
           <Header />
           <main className="flex-grow">{children}</main>
