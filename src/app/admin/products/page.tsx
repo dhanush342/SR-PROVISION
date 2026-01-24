@@ -37,27 +37,109 @@ import { categories, Product } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useLanguage } from '@/context/app-provider';
 import { Badge } from '@/components/ui/badge';
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 
-type ProductWithCategory = Product & { categoryName: string };
+type ProductWithCategory = Product & { categoryName: string; categoryId: string };
 
 export default function AdminProductsPage() {
     const { language } = useLanguage();
+    
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [selectedStatus, setSelectedStatus] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 5;
 
-    const allProducts: ProductWithCategory[] = React.useMemo(() => 
+    const allProducts: ProductWithCategory[] = useMemo(() => 
         categories.flatMap(category => 
             category.products.map(p => ({
                 ...p, 
                 categoryName: category.name[language],
+                categoryId: category.id,
             }))
         )
     , [language]);
     
-    const productSublist = allProducts.filter(p => ['toor-dal-1', 'sona-masoori-1', 'chilli-powder-1', 'tamarind-1', 'turmeric-powder-1'].includes(p.id))
-      .sort((a,b) => {
-        const order = ['toor-dal-1', 'sona-masoori-1', 'chilli-powder-1', 'tamarind-1', 'turmeric-powder-1'];
-        return order.indexOf(a.id) - order.indexOf(b.id);
-      });
+    const filteredProducts = useMemo(() => {
+        return allProducts
+            .filter(product => {
+                const query = searchQuery.toLowerCase();
+                const nameEn = product.name.en || '';
+                const nameTe = product.name.te || '';
+                
+                return (
+                    nameEn.toLowerCase().includes(query) ||
+                    nameTe.toLowerCase().includes(query)
+                );
+            })
+            .filter(product => {
+                return selectedCategory === 'all' || product.categoryId === selectedCategory;
+            })
+            .filter(product => {
+                return selectedStatus === 'all' || product.availability === selectedStatus;
+            });
+    }, [allProducts, searchQuery, selectedCategory, selectedStatus]);
+
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    const handlePageChange = (page: number) => {
+        if (page > 0 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+    
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        const maxPagesToShow = 3;
+        
+        if (totalPages <= 1) return null;
+
+        if (totalPages <= maxPagesToShow + 2) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(i);
+            }
+        } else {
+            if (currentPage <= maxPagesToShow) {
+                for (let i = 1; i <= maxPagesToShow + 1; i++) {
+                    pageNumbers.push(i);
+                }
+                pageNumbers.push('...');
+                pageNumbers.push(totalPages);
+            } else if (currentPage > totalPages - maxPagesToShow) {
+                pageNumbers.push(1);
+                pageNumbers.push('...');
+                for (let i = totalPages - maxPagesToShow; i <= totalPages; i++) {
+                    pageNumbers.push(i);
+                }
+            } else {
+                pageNumbers.push(1);
+                pageNumbers.push('...');
+                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                    pageNumbers.push(i);
+                }
+                pageNumbers.push('...');
+                pageNumbers.push(totalPages);
+            }
+        }
+
+        return pageNumbers.map((number, index) =>
+            typeof number === 'number' ? (
+                <Button
+                    key={index}
+                    variant={currentPage === number ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => handlePageChange(number)}
+                >
+                    {number}
+                </Button>
+            ) : (
+                <span key={index} className="px-2 py-1 text-sm">...</span>
+            )
+        );
+    };
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -73,7 +155,7 @@ export default function AdminProductsPage() {
             <Upload className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
-          <Button className="bg-primary hover:bg-primary/90">
+          <Button>
             <Plus className="mr-2 h-4 w-4" />
             Add New Product
           </Button>
@@ -84,11 +166,19 @@ export default function AdminProductsPage() {
             <div className="relative w-full sm:max-w-xs">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
-                placeholder="Search by product name, telugu name, or SKU..."
+                placeholder="Search by product name, telugu name..."
                 className="pl-8 bg-background"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
             />
             </div>
-            <Select>
+            <Select value={selectedCategory} onValueChange={(value) => {
+              setSelectedCategory(value);
+              setCurrentPage(1);
+            }}>
             <SelectTrigger className="w-full sm:w-[180px] bg-background">
                 <SelectValue placeholder="All Categories" />
             </SelectTrigger>
@@ -99,7 +189,10 @@ export default function AdminProductsPage() {
                 ))}
             </SelectContent>
             </Select>
-            <Select>
+            <Select value={selectedStatus} onValueChange={(value) => {
+              setSelectedStatus(value);
+              setCurrentPage(1);
+            }}>
             <SelectTrigger className="w-full sm:w-[180px] bg-background">
                 <SelectValue placeholder="All Status" />
             </SelectTrigger>
@@ -123,7 +216,7 @@ export default function AdminProductsPage() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {productSublist.map((product) => {
+                {currentProducts.length > 0 ? currentProducts.map((product) => {
                 const placeholder = PlaceHolderImages.find(p => p.id === product.imageId);
                 return (
                     <TableRow key={product.id}>
@@ -176,21 +269,33 @@ export default function AdminProductsPage() {
                     </TableCell>
                     </TableRow>
                 )
-                })}
+                }) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                      No products found.
+                    </TableCell>
+                  </TableRow>
+                )}
             </TableBody>
             </Table>
         </div>
         <div className="flex items-center justify-between mt-4 px-2">
-            <p className="text-sm text-muted-foreground">Showing 1-5 of {allProducts.length} products</p>
-            <div className="flex items-center gap-1">
-                <Button variant="outline" size="sm"><ChevronLeft className="h-4 w-4"/></Button>
-                <Button variant="outline" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground">1</Button>
-                <Button variant="ghost" size="sm">2</Button>
-                <Button variant="ghost" size="sm">3</Button>
-                <span className="text-muted-foreground">...</span>
-                <Button variant="ghost" size="sm">12</Button>
-                <Button variant="outline" size="sm"><ChevronRight className="h-4 w-4"/></Button>
-            </div>
+            <p className="text-sm text-muted-foreground">
+                Showing {filteredProducts.length > 0 ? indexOfFirstProduct + 1 : 0}
+                -
+                {Math.min(indexOfLastProduct, filteredProducts.length)} of {filteredProducts.length} products
+            </p>
+            {totalPages > 1 && (
+                <div className="flex items-center gap-1">
+                    <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                        <ChevronLeft className="h-4 w-4"/>
+                    </Button>
+                    {renderPageNumbers()}
+                    <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                        <ChevronRight className="h-4 w-4"/>
+                    </Button>
+                </div>
+            )}
         </div>
       </div>
     </div>
