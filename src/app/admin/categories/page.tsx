@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useLanguage, useStore } from "@/context/app-provider";
+import { useStore } from "@/context/app-provider";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,7 +29,6 @@ type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 
 
 export default function CategoriesPage() {
-  const { language } = useLanguage();
   const { categories, products, addCategory, updateCategory, deleteCategory } = useStore();
   const { toast } = useToast();
 
@@ -43,14 +42,16 @@ export default function CategoriesPage() {
   });
 
   React.useEffect(() => {
-    if (editingCategory) {
-      form.reset({
-        nameEn: editingCategory.name.en,
-        nameTe: editingCategory.name.te,
-        nameHi: editingCategory.name.hi,
-      });
-    } else {
-      form.reset({ nameEn: "", nameTe: "", nameHi: "" });
+    if (isSheetOpen) {
+        if (editingCategory) {
+          form.reset({
+            nameEn: editingCategory.name.en,
+            nameTe: editingCategory.name.te,
+            nameHi: editingCategory.name.hi,
+          });
+        } else {
+          form.reset({ nameEn: "", nameTe: "", nameHi: "" });
+        }
     }
   }, [editingCategory, form, isSheetOpen]);
 
@@ -81,7 +82,7 @@ export default function CategoriesPage() {
       toast({ title: "Category Updated!", description: `"${data.nameEn}" has been updated.` });
     } else {
       const newCategory: Category = {
-        id: data.nameEn.toLowerCase().replace(/\s+/g, '-'),
+        id: data.nameEn.toLowerCase().replace(/\s+/g, '-').concat(`-${Date.now()}`),
         name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
       };
       addCategory(newCategory);
@@ -117,40 +118,42 @@ export default function CategoriesPage() {
           <CardDescription>A list of all product categories in your store.</CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Category Name (EN)</TableHead>
-                <TableHead>Category Name (TE)</TableHead>
-                <TableHead>Category Name (HI)</TableHead>
-                <TableHead className="text-center">Products</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {categoriesWithCount.map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell className="font-medium">{category.name.en}</TableCell>
-                  <TableCell>{category.name.te}</TableCell>
-                  <TableCell>{category.name.hi}</TableCell>
-                  <TableCell className="text-center">{category.productCount}</TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleEdit(category)}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => setCategoryToDelete(category)}>Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Category Name (EN)</TableHead>
+                  <TableHead>Category Name (TE)</TableHead>
+                  <TableHead>Category Name (HI)</TableHead>
+                  <TableHead className="text-center">Products</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {categoriesWithCount.map((category) => (
+                  <TableRow key={category.id}>
+                    <TableCell className="font-medium">{category.name.en}</TableCell>
+                    <TableCell>{category.name.te}</TableCell>
+                    <TableCell>{category.name.hi}</TableCell>
+                    <TableCell className="text-center">{category.productCount}</TableCell>
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" aria-label={`Actions for ${category.name.en}`}>
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleEdit(category)}>Edit</DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => setCategoryToDelete(category)}>Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 

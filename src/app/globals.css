@@ -4,32 +4,32 @@
 
 @layer base {
   :root {
-    --background: 40 50% 96%; /* Light Tan */
+    --background: 40 77% 83%; /* Light Tan (#F5DEB3) */
     --foreground: 25 50% 10%; /* Dark Brown */
 
-    --card: 40 50% 100%;
+    --card: 40 50% 98%;
     --card-foreground: 25 50% 10%;
  
-    --popover: 40 50% 100%;
+    --popover: 40 50% 98%;
     --popover-foreground: 25 50% 10%;
  
     --primary: 26 78% 47%; /* Earthy Orange (#D2691E) */
     --primary-foreground: 26 85% 96%;
  
-    --secondary: 35 60% 90%;
+    --secondary: 40 60% 92%;
     --secondary-foreground: 26 78% 25%;
  
-    --muted: 35 60% 94%;
+    --muted: 40 60% 95%;
     --muted-foreground: 25 30% 45%;
  
-    --accent: 45 100% 67%; /* Mustard Yellow (#FFDB58) */
+    --accent: 47 100% 67%; /* Mustard Yellow (#FFDB58) */
     --accent-foreground: 45 100% 10%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 35 50% 88%;
-    --input: 35 50% 91%;
+    --border: 40 50% 90%;
+    --input: 40 50% 93%;
     --ring: 26 78% 47%;
  
     --radius: 0.5rem;

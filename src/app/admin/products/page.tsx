@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 import { useLanguage, useStore } from '@/context/app-provider';
-import type { Product, Category } from '@/lib/data';
+import type { Product } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,6 +29,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 type ProductWithCategoryName = Product & { categoryName: string };
 
 const productFormSchema = z.object({
+  id: z.string().optional(),
   nameEn: z.string().min(1, "English name is required"),
   nameTe: z.string().min(1, "Telugu name is required"),
   nameHi: z.string().min(1, "Hindi name is required"),
@@ -71,6 +72,7 @@ export default function AdminProductsPage() {
         if (isSheetOpen) {
             if (editingProduct) {
                 form.reset({
+                    id: editingProduct.id,
                     nameEn: editingProduct.name.en,
                     nameTe: editingProduct.name.te,
                     nameHi: editingProduct.name.hi,
@@ -78,7 +80,7 @@ export default function AdminProductsPage() {
                     options: editingProduct.options,
                 });
             } else {
-                form.reset({ nameEn: "", nameTe: "", nameHi: "", categoryId: "", options: [{ quantity: "", price: 0 }] });
+                form.reset({ id: `prod-${Date.now()}`, nameEn: "", nameTe: "", nameHi: "", categoryId: "", options: [{ quantity: "1kg", price: 0 }] });
             }
         }
     }, [isSheetOpen, editingProduct, form]);
@@ -152,7 +154,7 @@ export default function AdminProductsPage() {
             toast({ title: "Product Updated!", description: `"${data.nameEn}" has been updated.` });
         } else {
             const newProduct: Product = {
-                id: `prod-${Date.now()}`,
+                id: data.id || `prod-${Date.now()}`,
                 name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
                 categoryId: data.categoryId,
                 options: data.options,
@@ -258,7 +260,7 @@ export default function AdminProductsPage() {
                     <TableCell className="font-medium">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-md overflow-hidden bg-muted flex-shrink-0">
-                                <Image src={image?.imageUrl || `https://picsum.photos/seed/${product.id}/48`} alt={product.name.en} width={48} height={48} className="object-cover w-full h-full" />
+                                {image && <Image src={image.imageUrl} alt={product.name.en} width={48} height={48} className="object-cover w-full h-full" />}
                             </div>
                             <div>
                                 <div className="font-semibold line-clamp-1">{product.name.en}</div>
@@ -283,7 +285,7 @@ export default function AdminProductsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                         <DropdownMenu>
-                        <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
+                        <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label={`Actions for ${product.name.en}`}><MoreVertical className="h-4 w-4" /></Button></DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => handleEdit(product)}><Edit className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setProductToView(product)}><Eye className="mr-2 h-4 w-4" />View</DropdownMenuItem>
@@ -308,9 +310,9 @@ export default function AdminProductsPage() {
             </p>
             {totalPages > 1 && (
                 <div className="flex items-center gap-1">
-                    <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft className="h-4 w-4"/></Button>
+                    <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} aria-label="Go to previous page"><ChevronLeft className="h-4 w-4"/></Button>
                     <span className="text-sm font-medium">{currentPage} / {totalPages}</span>
-                    <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}><ChevronRight className="h-4 w-4"/></Button>
+                    <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Go to next page"><ChevronRight className="h-4 w-4"/></Button>
                 </div>
             )}
         </div>
@@ -326,6 +328,9 @@ export default function AdminProductsPage() {
                         </SheetHeader>
                         <ScrollArea className="h-[calc(100%-150px)] pr-6 -mr-6">
                         <div className="grid gap-4 py-4">
+                            <FormField control={form.control} name="id" render={({ field }) => (
+                                <FormItem><FormLabel>Product ID</FormLabel><FormControl><Input placeholder="e.g., toor-dal-1" {...field} disabled={!!editingProduct} /></FormControl><FormMessage /></FormItem>
+                            )}/>
                             <FormField control={form.control} name="nameEn" render={({ field }) => (
                                 <FormItem><FormLabel>Product Name (EN)</FormLabel><FormControl><Input placeholder="e.g., Toor Dal" {...field} /></FormControl><FormMessage /></FormItem>
                             )}/>
@@ -353,7 +358,7 @@ export default function AdminProductsPage() {
                                         <FormField control={form.control} name={`options.${index}.price`} render={({ field }) => (
                                             <FormItem className="w-28"><FormControl><Input type="number" step="0.01" placeholder="Price (₹)" {...field} /></FormControl><FormMessage/></FormItem>
                                         )}/>
-                                        <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} disabled={fields.length <= 1}><X className="h-4 w-4" /></Button>
+                                        <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} disabled={fields.length <= 1} aria-label="Remove price variant"><X className="h-4 w-4" /></Button>
                                     </div>
                                 ))}
                                 <Button type="button" variant="outline" size="sm" className="mt-2" onClick={() => append({ quantity: '', price: 0 })}><Plus className="mr-2 h-4 w-4" /> Add Variant</Button>
@@ -391,7 +396,7 @@ export default function AdminProductsPage() {
                 </DialogHeader>
                 <div className="mt-4 grid gap-4">
                     <div className="w-full h-48 rounded-md overflow-hidden bg-muted relative">
-                        {productToView && <Image src={PlaceHolderImages.find(p => p.id === productToView.id)?.imageUrl || `https://picsum.photos/seed/${productToView.id}/400`} alt={productToView.name.en} layout="fill" objectFit="cover" />}
+                        {productToView && <Image src={PlaceHolderImages.find(p => p.id === productToView.id)?.imageUrl || ''} alt={productToView.name.en} fill style={{objectFit:"cover"}} />}
                     </div>
                     <div className="text-sm"><strong>Category:</strong> <Badge variant="secondary">{productToView?.categoryName}</Badge></div>
                     <div className="text-sm"><strong>Status:</strong> <Badge variant={productToView?.availability === 'in-stock' ? 'default' : 'destructive'}>{productToView?.availability}</Badge></div>

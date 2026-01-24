@@ -36,6 +36,7 @@ export function ProductCard({ product }: ProductCardProps) {
               alt={product.name[language]}
               width={400}
               height={300}
+              loading="lazy"
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
               onError={() => setImgSrc(`https://picsum.photos/seed/${product.id}/400/300`)}
               data-ai-hint={image?.imageHint}

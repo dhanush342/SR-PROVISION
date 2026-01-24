@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import { Language, Product, Category as CategoryType, Customer } from '@/lib/data';
 import { translations } from '@/lib/translations';
 import { productsData, categoriesData, customersData } from '@/lib/data';
@@ -79,9 +79,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [customers, setCustomers] = useState<Customer[]>(customersData);
 
   // Language Logic
-  const t = (key: keyof typeof translations.en) => {
+  const t = useCallback((key: keyof typeof translations.en) => {
     return translations[language][key] || translations.en[key];
-  };
+  }, [language]);
 
   // Auth Logic
   useEffect(() => {
@@ -126,7 +126,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const addCategory = (category: CategoryType) => setCategories(prev => [category, ...prev]);
   const updateCategory = (category: CategoryType) => setCategories(prev => prev.map(c => c.id === category.id ? category : c));
   const deleteCategory = (categoryId: string) => {
-    // Also un-categorize products in the deleted category
     setProducts(prev => prev.map(p => p.categoryId === categoryId ? {...p, categoryId: 'uncategorized'} : p));
     setCategories(prev => prev.filter(c => c.id !== categoryId));
   };
@@ -135,7 +134,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const updateCustomer = (customer: Customer) => setCustomers(prev => prev.map(c => c.id === customer.id ? customer : c));
   const deleteCustomer = (customerId: string) => setCustomers(prev => prev.filter(c => c.id !== customerId));
   
-  const getCategoriesWithProducts = () => {
+  const getCategoriesWithProducts = useCallback(() => {
     const categoryMap = new Map<string, Product[]>();
     products.forEach(p => {
         if (!categoryMap.has(p.categoryId)) {
@@ -148,7 +147,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         ...cat,
         products: categoryMap.get(cat.id) || []
     })).sort((a,b) => a.id === 'uncategorized' ? 1 : b.id === 'uncategorized' ? -1 : 0);
-  };
+  }, [products, categories]);
 
   const languageContextValue: LanguageContextType = { language, setLanguage, t };
   const authContextValue: AuthContextType = { isAuthenticated, isLoading, login, logout };
