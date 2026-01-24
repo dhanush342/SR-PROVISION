@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/app-provider';
 import type { Product } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +15,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { language, t } = useLanguage();
   const [selectedOption, setSelectedOption] = useState(product.options[0]);
+  const [imgSrc, setImgSrc] = useState(product.imageUrl);
 
   const handleQuantityChange = (value: string) => {
     const option = product.options.find(opt => opt.quantity === value);
@@ -24,26 +24,18 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
-  const placeholder = PlaceHolderImages.find(p => p.id === product.imageId);
-
   return (
     <Card className="group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
       <CardHeader className="p-0">
-        <div className="overflow-hidden">
-          {placeholder ? (
-             <Image
-              src={placeholder.imageUrl}
+        <div className="overflow-hidden aspect-[4/3] bg-muted">
+            <Image
+              src={imgSrc}
               alt={product.name[language]}
               width={400}
               height={300}
-              className="object-cover w-full h-auto aspect-[4/3] transition-transform duration-300 group-hover:scale-105"
-              data-ai-hint={placeholder.imageHint}
+              className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+              onError={() => setImgSrc('https://picsum.photos/seed/placeholder/400/300')}
             />
-          ) : (
-             <div className="w-full h-full bg-muted flex items-center justify-center text-muted-foreground aspect-[4/3]">
-                No Image
-             </div>
-          )}
         </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">
