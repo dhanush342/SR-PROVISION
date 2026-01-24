@@ -8,6 +8,7 @@ import {
   Plus,
   ChevronLeft,
   ChevronRight,
+  X,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,16 +34,56 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { categories, Product } from '@/lib/data';
+import { categories as staticCategories, Product } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useLanguage } from '@/context/app-provider';
 import { Badge } from '@/components/ui/badge';
 import React, { useState, useMemo } from 'react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+  SheetClose,
+} from '@/components/ui/sheet';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type ProductWithCategory = Product & { categoryName: string; categoryId: string };
 
+const productFormSchema = z.object({
+  nameEn: z.string().min(1, "English name is required"),
+  nameTe: z.string().min(1, "Telugu name is required"),
+  nameHi: z.string().min(1, "Hindi name is required"),
+  categoryId: z.string().min(1, "Category is required"),
+  imageId: z.string().min(1, "Image ID is required"),
+  options: z.array(z.object({
+    quantity: z.string().min(1, "Quantity is required"),
+    price: z.coerce.number().min(0, "Price must be positive"),
+  })).min(1, "At least one pricing option is required"),
+});
+type ProductFormValues = z.infer<typeof productFormSchema>;
+
+
 export default function AdminProductsPage() {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
+    const { toast } = useToast();
     
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
@@ -50,8 +91,8 @@ export default function AdminProductsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 5;
 
-    const allProducts: ProductWithCategory[] = useMemo(() => 
-        categories.flatMap(category => 
+    const initialProducts = useMemo(() => 
+        staticCategories.flatMap(category => 
             category.products.map(p => ({
                 ...p, 
                 categoryName: category.name[language],
@@ -60,8 +101,31 @@ export default function AdminProductsPage() {
         )
     , [language]);
     
+    const [products, setProducts] = useState<ProductWithCategory[]>(initialProducts);
+    const [isAddSheetOpen, setAddSheetOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState<ProductWithCategory | null>(null);
+
+    const form = useForm<ProductFormValues>({
+        resolver: zodResolver(productFormSchema),
+        defaultValues: {
+            nameEn: "",
+            nameTe: "",
+            nameHi: "",
+            categoryId: "",
+            imageId: "",
+            options: [{ quantity: "", price: 0 }],
+        },
+    });
+
+    const { fields, append, remove } = useFieldArray({
+        control: form.control,
+        name: "options",
+    });
+
     const filteredProducts = useMemo(() => {
-        return allProducts
+        const categoryMap = new Map(staticCategories.map(c => [c.id, c.name[language]]));
+        return products
+            .map(p => ({...p, categoryName: categoryMap.get(p.categoryId) || p.categoryName }))
             .filter(product => {
                 const query = searchQuery.toLowerCase();
                 const nameEn = product.name.en || '';
@@ -78,7 +142,7 @@ export default function AdminProductsPage() {
             .filter(product => {
                 return selectedStatus === 'all' || product.availability === selectedStatus;
             });
-    }, [allProducts, searchQuery, selectedCategory, selectedStatus]);
+    }, [products, searchQuery, selectedCategory, selectedStatus, language]);
 
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
     const indexOfLastProduct = currentPage * productsPerPage;
@@ -90,6 +154,50 @@ export default function AdminProductsPage() {
             setCurrentPage(page);
         }
     };
+    
+    const handleStatusChange = (productId: string, checked: boolean) => {
+        setProducts(currentProducts => 
+            currentProducts.map(p => 
+                p.id === productId 
+                ? { ...p, availability: checked ? 'in-stock' : 'out-of-stock' } 
+                : p
+            )
+        );
+        toast({ title: "Status updated!" });
+    };
+
+    const handleDeleteConfirm = () => {
+        if (!productToDelete) return;
+        setProducts(currentProducts => 
+            currentProducts.filter(p => p.id !== productToDelete.id)
+        );
+        toast({ title: "Product deleted!", description: `${productToDelete.name.en} has been removed.`, variant: "destructive" });
+        setProductToDelete(null);
+    };
+
+    function onSubmit(data: ProductFormValues) {
+        const newProduct: ProductWithCategory = {
+            id: `prod-${Date.now()}`,
+            name: {
+                en: data.nameEn,
+                te: data.nameTe,
+                hi: data.nameHi,
+            },
+            categoryId: data.categoryId,
+            categoryName: staticCategories.find(c => c.id === data.categoryId)?.name[language] || '',
+            imageId: data.imageId,
+            options: data.options,
+            availability: 'in-stock',
+        };
+
+        setProducts(currentProducts => [newProduct, ...currentProducts]);
+        toast({
+            title: "Product Added!",
+            description: `${data.nameEn} has been added to the inventory.`,
+        });
+        setAddSheetOpen(false);
+        form.reset();
+    }
     
     const renderPageNumbers = () => {
         const pageNumbers = [];
@@ -155,7 +263,7 @@ export default function AdminProductsPage() {
             <Upload className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
-          <Button>
+          <Button onClick={() => setAddSheetOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add New Product
           </Button>
@@ -184,7 +292,7 @@ export default function AdminProductsPage() {
             </SelectTrigger>
             <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((cat) => (
+                {staticCategories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem>
                 ))}
             </SelectContent>
@@ -243,15 +351,13 @@ export default function AdminProductsPage() {
                                     {option.quantity} | ₹{option.price}
                                 </Badge>
                             ))}
-                            {product.id === 'chilli-powder-1' && (
-                                <Button variant="ghost" size="sm" className="text-primary hover:bg-primary/10">
-                                    <Plus className="h-3 w-3 mr-1"/> Add
-                                </Button>
-                            )}
                         </div>
                     </TableCell>
                     <TableCell>
-                        <Switch checked={product.availability === 'in-stock'} />
+                        <Switch 
+                            checked={product.availability === 'in-stock'} 
+                            onCheckedChange={(checked) => handleStatusChange(product.id, checked)}
+                        />
                     </TableCell>
                     <TableCell className="text-right">
                         <DropdownMenu>
@@ -263,7 +369,12 @@ export default function AdminProductsPage() {
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem>Edit</DropdownMenuItem>
                             <DropdownMenuItem>View</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">Delete</DropdownMenuItem>
+                            <DropdownMenuItem 
+                                className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                                onClick={() => setProductToDelete(product)}
+                            >
+                                Delete
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>
@@ -298,6 +409,121 @@ export default function AdminProductsPage() {
             )}
         </div>
       </div>
+
+        <Sheet open={isAddSheetOpen} onOpenChange={setAddSheetOpen}>
+            <SheetContent className="sm:max-w-lg">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <SheetHeader>
+                            <SheetTitle>Add New Product</SheetTitle>
+                            <SheetDescription>
+                                Fill out the details for the new product. Click save when you're done.
+                            </SheetDescription>
+                        </SheetHeader>
+                        <ScrollArea className="h-[calc(100vh-150px)] pr-6">
+                        <div className="grid gap-4 py-4">
+                            <FormField control={form.control} name="nameEn" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Product Name (EN)</FormLabel>
+                                    <FormControl><Input placeholder="e.g., Toor Dal" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+                            <FormField control={form.control} name="nameTe" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Product Name (TE)</FormLabel>
+                                    <FormControl><Input placeholder="e.g., కంది పప్పు" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+                             <FormField control={form.control} name="nameHi" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Product Name (HI)</FormLabel>
+                                    <FormControl><Input placeholder="e.g., अरहर की दाल" {...field} /></FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+                            <FormField control={form.control} name="categoryId" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Category</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {staticCategories.map(cat => <SelectItem key={cat.id} value={cat.id}>{cat.name[language]}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+                             <FormField control={form.control} name="imageId" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Image ID</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger><SelectValue placeholder="Select an image" /></SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {PlaceHolderImages.map(img => <SelectItem key={img.id} value={img.id}>{img.id}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}/>
+                            <div>
+                                <FormLabel>Pricing Variants</FormLabel>
+                                {fields.map((field, index) => (
+                                    <div key={field.id} className="flex items-end gap-2 mt-2">
+                                        <FormField control={form.control} name={`options.${index}.quantity`} render={({ field }) => (
+                                            <FormItem className="flex-1">
+                                                <FormControl><Input placeholder="e.g., 500g" {...field} /></FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}/>
+                                        <FormField control={form.control} name={`options.${index}.price`} render={({ field }) => (
+                                            <FormItem className="flex-1">
+                                                <FormControl><Input type="number" placeholder="Price (₹)" {...field} /></FormControl>
+                                                <FormMessage/>
+                                            </FormItem>
+                                        )}/>
+                                        <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)} disabled={fields.length <= 1}>
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                                <Button type="button" variant="outline" size="sm" className="mt-2" onClick={() => append({ quantity: '', price: 0 })}>
+                                    <Plus className="mr-2 h-4 w-4" /> Add Variant
+                                </Button>
+                            </div>
+                        </div>
+                        </ScrollArea>
+                        <SheetFooter>
+                            <SheetClose asChild>
+                                <Button type="button" variant="secondary">Cancel</Button>
+                            </SheetClose>
+                            <Button type="submit">Save Product</Button>
+                        </SheetFooter>
+                    </form>
+                </Form>
+            </SheetContent>
+        </Sheet>
+
+        <AlertDialog open={!!productToDelete} onOpenChange={(open) => !open && setProductToDelete(null)}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the product
+                        <span className="font-semibold"> {productToDelete?.name.en}</span> from your inventory.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setProductToDelete(null)}>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive hover:bg-destructive/90">Delete</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     </div>
   );
 }
