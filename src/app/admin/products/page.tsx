@@ -96,7 +96,7 @@ export default function AdminProductsPage() {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [selectedStatus, setSelectedStatus] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 5;
+    const productsPerPage = 10;
 
     const initialProducts = useMemo(() => 
         staticCategories.flatMap(category => 
@@ -270,7 +270,6 @@ export default function AdminProductsPage() {
     };
 
     const renderPageNumbers = () => {
-        // ... (this function can remain the same)
         const pageNumbers = [];
         const maxPagesToShow = 3;
         
@@ -319,7 +318,7 @@ export default function AdminProductsPage() {
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Inventory & Products</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Inventory &amp; Products</h1>
           <p className="text-muted-foreground">Manage stock, prices, and catalog visibility.</p>
         </div>
         <div className="flex gap-2 mt-4 sm:mt-0">
@@ -535,3 +534,5 @@ export default function AdminProductsPage() {
     </div>
   );
 }
+
+    

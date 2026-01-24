@@ -3,86 +3,368 @@
     {
       "id": "hero-background",
       "description": "A vibrant market stall with a variety of Indian spices and groceries.",
-      "imageUrl": "https://images.unsplash.com/photo-1706793986872-b599e261f155?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzcGljZXMlMjBtYXJrZXR8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1558458654-a145c979a342?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzcGljZXMlMjBtYXJrZXR8ZW58MHx8fHwxNzY5MjE3MDc4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "spices market"
     },
     {
       "id": "toor-dal",
-      "description": "A bowl of toor dal (pigeon peas)",
-      "imageUrl": "https://images.unsplash.com/photo-1667390034698-c2369cd1668b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkwNzAyMzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Toor Dal",
+      "imageUrl": "https://images.unsplash.com/photo-1648455320791-a667c8aab7e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "lentils bowl"
     },
     {
       "id": "moong-dal",
-      "description": "A bowl of moong dal (mung beans)",
-      "imageUrl": "https://images.unsplash.com/photo-1711915408847-ae32b80a3fd0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkwNzAyMzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Moong Dal",
+      "imageUrl": "https://images.unsplash.com/photo-1711915408248-e30b20613316?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bGVudGlscyUyMGJvd2x8ZW58MHx8fHwxNzY5MjI0MzA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "lentils bowl"
     },
     {
-      "id": "sona-masoori-rice",
-      "description": "A sack of Sona Masoori rice",
-      "imageUrl": "https://images.unsplash.com/photo-1723475158229-894679ca024e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyaWNlJTIwc2Fja3xlbnwwfHx8fDE3NjkwNzAyMzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "id": "urad-dal",
+      "description": "Urad Dal",
+      "imageUrl": "https://images.unsplash.com/photo-1591266798549-32fa7cd32f45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lentils bowl"
+    },
+    {
+      "id": "chana-dal",
+      "description": "Chana Dal",
+      "imageUrl": "https://images.unsplash.com/photo-1707080019893-bf8fc3d55f08?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lentils bowl"
+    },
+    {
+      "id": "masoor-dal",
+      "description": "Masoor Dal",
+      "imageUrl": "https://images.unsplash.com/photo-1670591950065-1f2cdcf13873?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsZW50aWxzJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "lentils bowl"
+    },
+    {
+      "id": "green-peas",
+      "description": "Dried Green Peas",
+      "imageUrl": "https://images.unsplash.com/photo-1551848739-00f229d30d81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkcmllZCUyMHBlYXN8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dried peas"
+    },
+    {
+      "id": "rajma",
+      "description": "Rajma (Kidney Beans)",
+      "imageUrl": "https://images.unsplash.com/photo-1693664132472-1007dd25490c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxraWRuZXklMjBiZWFuc3xlbnwwfHx8fDE3NjkyMjQzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "kidney beans"
+    },
+    {
+      "id": "kabuli-chana",
+      "description": "Kabuli Chana (Chickpeas)",
+      "imageUrl": "https://images.unsplash.com/photo-1612700722193-f0410adb8949?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaGlja3BlYXMlMjBib3dsfGVufDB8fHx8MTc2OTIyNDMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chickpeas bowl"
+    },
+    {
+      "id": "black-eyed-peas",
+      "description": "Black Eyed Peas",
+      "imageUrl": "https://images.unsplash.com/photo-1593536673055-14892cdffac7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxiZWFucyUyMGJvd2x8ZW58MHx8fHwxNzY5MjI0MzA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "beans bowl"
+    },
+    {
+      "id": "horse-gram",
+      "description": "Horse Gram",
+      "imageUrl": "https://images.unsplash.com/photo-1620265105743-2d4e5222f0ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxiZWFucyUyMGJvd2x8ZW58MHx8fHwxNzY5MjI0MzA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "beans bowl"
+    },
+    {
+      "id": "sona-masoori",
+      "description": "Sona Masoori Rice",
+      "imageUrl": "https://images.unsplash.com/photo-1645331465778-eb409d112198?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyaWNlJTIwc2Fja3xlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rice sack"
     },
     {
       "id": "basmati-rice",
-      "description": "A bowl of cooked Basmati rice",
-      "imageUrl": "https://images.unsplash.com/photo-1682566509568-ded8649b26bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxyaWNlJTIwYm93bHxlbnwwfHx8fDE3NjkwOTkzNjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Basmati Rice",
+      "imageUrl": "https://images.unsplash.com/photo-1609501676725-7186f017a4b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyaWNlJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "rice bowl"
     },
     {
-      "id": "turmeric-powder",
-      "description": "A spoonful of turmeric powder",
-      "imageUrl": "https://images.unsplash.com/photo-1633881614907-8587c9b93c2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzcGljZXMlMjBwb3dkZXJ8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "spices powder"
+      "id": "brown-rice",
+      "description": "Brown Rice",
+      "imageUrl": "https://images.unsplash.com/photo-1602881916963-5daf2d97c06e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyaWNlJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rice bowl"
+    },
+    {
+      "id": "idli-rice",
+      "description": "Idli Rice",
+      "imageUrl": "https://images.unsplash.com/photo-1609501676725-7186f017a4b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxyaWNlJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "rice bowl"
+    },
+    {
+      "id": "poha",
+      "description": "Poha (Flattened Rice)",
+      "imageUrl": "https://images.unsplash.com/photo-1651793371427-ad065df0d208?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxmbGF0dGVuZWQlMjByaWNlfGVufDB8fHx8MTc2OTIyNDMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flattened rice"
+    },
+    {
+      "id": "rawa",
+      "description": "Sooji / Rawa (Semolina)",
+      "imageUrl": "https://images.unsplash.com/photo-1673960802455-ec189a6207e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzZW1vbGluYSUyMGJvd2x8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "semolina bowl"
+    },
+    {
+      "id": "jowar",
+      "description": "Jowar (Sorghum)",
+      "imageUrl": "https://images.unsplash.com/photo-1641912844873-47ee4b926faa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzb3JnaHVtJTIwZ3JhaW5zfGVufDB8fHx8MTc2OTIyNDMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sorghum grains"
+    },
+    {
+      "id": "bajra",
+      "description": "Bajra (Pearl Millet)",
+      "imageUrl": "https://images.unsplash.com/photo-1539397726814-5afbfa7934f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtaWxsZXQlMjBncmFpbnN8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "millet grains"
+    },
+    {
+      "id": "ragi",
+      "description": "Ragi (Finger Millet)",
+      "imageUrl": "https://images.unsplash.com/photo-1768729339998-909158957162?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtaWxsZXQlMjBncmFpbnN8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "millet grains"
+    },
+    {
+      "id": "sabudana",
+      "description": "Sabudana (Sago)",
+      "imageUrl": "https://picsum.photos/seed/sabudana/400/300",
+      "imageHint": "sago pearls"
+    },
+    {
+      "id": "turmeric",
+      "description": "Turmeric Powder",
+      "imageUrl": "https://images.unsplash.com/photo-1716816211590-c15a328a5ff0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzcGljZSUyMHBvd2RlcnxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spice powder"
     },
     {
       "id": "chilli-powder",
-      "description": "A spoonful of red chilli powder",
-      "imageUrl": "https://images.unsplash.com/photo-1767514562412-91a63641cde1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzcGljZXMlMjBwb3dkZXJ8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "spices powder"
+      "description": "Red Chilli Powder",
+      "imageUrl": "https://images.unsplash.com/photo-1698557048177-a460bb415177?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzcGljZSUyMHBvd2RlcnxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spice powder"
     },
     {
       "id": "coriander-powder",
-      "description": "A spoonful of coriander powder",
-      "imageUrl": "https://images.unsplash.com/photo-1722262796195-728fdf4a449f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzcGljZXMlMjBwb3dkZXJ8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "spices powder"
+      "description": "Coriander Powder",
+      "imageUrl": "https://images.unsplash.com/photo-1698557522954-c82d5c2f0e77?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzcGljZSUyMHBvd2RlcnxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spice powder"
+    },
+    {
+      "id": "cumin-seeds",
+      "description": "Cumin Seeds (Jeera)",
+      "imageUrl": "https://images.unsplash.com/photo-1600791102844-208e695205f6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzcGljZXMlMjBzZWVkc3xlbnwwfHx8fDE3NjkyMjQzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spices seeds"
+    },
+    {
+      "id": "mustard-seeds",
+      "description": "Mustard Seeds (Rai)",
+      "imageUrl": "https://images.unsplash.com/photo-1758657996330-095d08451cd9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzcGljZXMlMjBzZWVkc3xlbnwwfHx8fDE3NjkyMjQzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spices seeds"
+    },
+    {
+      "id": "garam-masala",
+      "description": "Garam Masala",
+      "imageUrl": "https://images.unsplash.com/photo-1768729341078-9da4e0ea959e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzcGljZSUyMHBvd2RlcnxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spice powder"
+    },
+    {
+      "id": "black-pepper",
+      "description": "Black Pepper",
+      "imageUrl": "https://images.unsplash.com/photo-1649952052743-5e8f37c348c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwZXBwZXJjb3JucyUyMHNwaWNlfGVufDB8fHx8MTc2OTIyNDMwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "peppercorns spice"
+    },
+    {
+      "id": "cardamom",
+      "description": "Cardamom (Elaichi)",
+      "imageUrl": "https://images.unsplash.com/photo-1701190588800-67a7007492ad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXJkYW1vbSUyMHBvZHN8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cardamom pods"
+    },
+    {
+      "id": "cloves",
+      "description": "Cloves (Laung)",
+      "imageUrl": "https://images.unsplash.com/photo-1623307645550-40d76c6e22ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjbG92ZXMlMjBzcGljZXxlbnwwfHx8fDE3NjkxMTE3NTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cloves spice"
+    },
+    {
+      "id": "asafoetida",
+      "description": "Asafoetida (Hing)",
+      "imageUrl": "https://images.unsplash.com/photo-1768729340132-a8c72080bb23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzcGljZSUyMHBvd2RlcnxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "spice powder"
+    },
+    {
+      "id": "tamarind",
+      "description": "Tamarind",
+      "imageUrl": "https://images.unsplash.com/photo-1677938642362-6e45bb658512?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0YW1hcmluZCUyMGZydWl0fGVufDB8fHx8MTc2OTIyNDMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tamarind fruit"
+    },
+    {
+      "id": "jaggery",
+      "description": "Jaggery",
+      "imageUrl": "https://picsum.photos/seed/jaggery/400/300",
+      "imageHint": "jaggery block"
+    },
+    {
+      "id": "gg-paste",
+      "description": "Ginger Garlic Paste",
+      "imageUrl": "https://images.unsplash.com/photo-1646722670581-974d084e0ec0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwYXN0ZSUyMGphcnxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "paste jar"
+    },
+    {
+      "id": "poppy-seeds",
+      "description": "Poppy Seeds (Khus Khus)",
+      "imageUrl": "https://images.unsplash.com/photo-1766336042003-d8cdb54985b3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzZWVkcyUyMGJvd2x8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "seeds bowl"
+    },
+    {
+      "id": "cashews",
+      "description": "Cashews",
+      "imageUrl": "https://images.unsplash.com/photo-1633101142524-695abcd282c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxudXRzJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nuts bowl"
+    },
+    {
+      "id": "almonds",
+      "description": "Almonds",
+      "imageUrl": "https://images.unsplash.com/photo-1671981200629-014c03829abb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxudXRzJTIwYm93bHxlbnwwfHx8fDE3NjkyMjQzMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nuts bowl"
+    },
+    {
+      "id": "raisins",
+      "description": "Raisins (Kishmish)",
+      "imageUrl": "https://images.unsplash.com/photo-1621919472462-6db865a003e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxkcmllZCUyMGZydWl0fGVufDB8fHx8MTc2OTIyNDMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dried fruit"
+    },
+    {
+      "id": "vinegar",
+      "description": "Synthetic Vinegar",
+      "imageUrl": "https://images.unsplash.com/photo-1674414719419-623c8612f892?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxib3R0bGUlMjBsaXF1aWR8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bottle liquid"
+    },
+    {
+      "id": "soya-sauce",
+      "description": "Soya Sauce",
+      "imageUrl": "https://images.unsplash.com/photo-1697026994064-1859602427f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzYXVjZSUyMGJvdHRsZXxlbnwwfHx8fDE3NjkxODMxMTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sauce bottle"
+    },
+    {
+      "id": "rose-water",
+      "description": "Rose Water",
+      "imageUrl": "https://images.unsplash.com/photo-1704838962856-308f21bac6ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxib3R0bGUlMjBsaXF1aWR8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bottle liquid"
     },
     {
       "id": "sunflower-oil",
-      "description": "A bottle of sunflower oil",
-      "imageUrl": "https://images.unsplash.com/photo-1608571424237-381e6b43a2a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "oil bottle"
-    },
-    {
-      "id": "groundnut-oil",
-      "description": "A bottle of groundnut oil",
+      "description": "Sunflower Oil",
       "imageUrl": "https://images.unsplash.com/photo-1608571424266-edeb9bbefdec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "oil bottle"
     },
     {
+      "id": "groundnut-oil",
+      "description": "Groundnut Oil",
+      "imageUrl": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "ghee",
+      "description": "Pure Ghee",
+      "imageUrl": "https://picsum.photos/seed/ghee/400/300",
+      "imageHint": "ghee jar"
+    },
+    {
+      "id": "coconut-oil",
+      "description": "Coconut Oil",
+      "imageUrl": "https://images.unsplash.com/photo-1608571702600-5a5419d31475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "sesame-oil",
+      "description": "Sesame Oil (Gingelly)",
+      "imageUrl": "https://images.unsplash.com/photo-1608571702346-bf078a741b19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "mustard-oil",
+      "description": "Mustard Oil",
+      "imageUrl": "https://images.unsplash.com/photo-1608571424237-381e6b43a2a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "castor-oil",
+      "description": "Castor Oil",
+      "imageUrl": "https://images.unsplash.com/photo-1608571424237-381e6b43a2a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "vanaspati",
+      "description": "Vanaspati",
+      "imageUrl": "https://picsum.photos/seed/vanaspati/400/300",
+      "imageHint": "ghee can"
+    },
+    {
+      "id": "olive-oil",
+      "description": "Olive Oil",
+      "imageUrl": "https://images.unsplash.com/photo-1608571702600-5a5419d31475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
+      "id": "palm-oil",
+      "description": "Palm Oil",
+      "imageUrl": "https://images.unsplash.com/photo-1596470663178-dc2df28026f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvaWwlMjBib3R0bGV8ZW58MHx8fHwxNzY5MTQzODczfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "oil bottle"
+    },
+    {
       "id": "atta-flour",
-      "description": "A bag of whole wheat atta flour",
-      "imageUrl": "https://images.unsplash.com/photo-1646539248100-0a92d659d4d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmbG91ciUyMGJhZ3xlbnwwfHx8fDE3NjkwOTQxMzl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Whole Wheat Atta",
+      "imageUrl": "https://images.unsplash.com/photo-1641394535269-dbea1fa94ff1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmxvdXIlMjBiYWd8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "flour bag"
     },
     {
       "id": "sugar",
-      "description": "Cubes of white sugar",
-      "imageUrl": "https://images.unsplash.com/photo-1611484907128-9acda09a35a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzdWdhciUyMGN1YmVzfGVufDB8fHx8MTc2OTE0Mzg3M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "sugar cubes"
+      "description": "Sugar",
+      "imageUrl": "https://images.unsplash.com/photo-1562245376-3f9dae9f0e73?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxzdWdhciUyMGNyeXN0YWxzfGVufDB8fHx8MTc2OTIyNDMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sugar crystals"
     },
     {
       "id": "salt",
-      "description": "A pile of iodized salt",
-      "imageUrl": "https://images.unsplash.com/photo-1599446018101-168ff8842a29?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYWx0JTIwcGlsZXxlbnwwfHx8fDE3NjkxNDM4NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "description": "Iodized Salt",
+      "imageUrl": "https://images.unsplash.com/photo-1760611656624-2e44244cd4c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzYWx0JTIwcGlsZXxlbnwwfHx8fDE3NjkxNDM4NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "salt pile"
     },
     {
-      "id": "tamarind",
-      "description": "A block of tamarind",
-      "imageUrl": "https://picsum.photos/seed/tamarind/400/300",
-      "imageHint": "tamarind block"
+      "id": "tea-powder",
+      "description": "Tea Powder",
+      "imageUrl": "https://images.unsplash.com/photo-1491497895121-1334fc14d8c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0ZWElMjBsZWF2ZXN8ZW58MHx8fHwxNzY5MTUxMzI1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tea leaves"
+    },
+    {
+      "id": "coffee-powder",
+      "description": "Coffee Powder",
+      "imageUrl": "https://images.unsplash.com/photo-1692296113053-76f240e5ce33?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29mZmVlJTIwYmVhbnN8ZW58MHx8fHwxNzY5MTU2NDAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee beans"
+    },
+    {
+      "id": "besan-flour",
+      "description": "Besan (Gram Flour)",
+      "imageUrl": "https://images.unsplash.com/photo-1640193881544-e8b70488db0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmbG91ciUyMGJvd2x8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flour bowl"
+    },
+    {
+      "id": "maida-flour",
+      "description": "Maida (All Purpose Flour)",
+      "imageUrl": "https://images.unsplash.com/photo-1668723968067-7fef153255fd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZmxvdXIlMjBib3dsfGVufDB8fHx8MTc2OTIyNDMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "flour bowl"
+    },
+    {
+      "id": "papad",
+      "description": "Papad",
+      "imageUrl": "https://images.unsplash.com/photo-1607344229432-08a46ba0dc42?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwYXBhZHVtJTIwc25hY2t8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "papadum snack"
+    },
+    {
+      "id": "vermicelli",
+      "description": "Vermicelli",
+      "imageUrl": "https://images.unsplash.com/photo-1682159173221-b4fb40797773?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwYXN0YSUyMG5vb2RsZXN8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pasta noodles"
+    },
+    {
+      "id": "rock-salt",
+      "description": "Rock Salt",
+      "imageUrl": "https://images.unsplash.com/photo-1629285464605-8e6493153fdb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzYWx0JTIwY3J5c3RhbHN8ZW58MHx8fHwxNzY5MjI0MzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salt crystals"
     }
   ]
 }
