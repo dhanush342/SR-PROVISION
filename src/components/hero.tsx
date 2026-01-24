@@ -24,10 +24,13 @@ export function Hero() {
       )}
       <div className="absolute inset-0 bg-black/60" />
       <div className="relative z-10 flex h-full flex-col items-center justify-center text-center px-4">
-        <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
-          {t('heroTitle')}
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-primary-foreground tracking-tight leading-tight">
+          {t('heroTitleIntro')}{' '}
+          <span className="text-accent underline decoration-4 decoration-accent/30 underline-offset-4">
+             {t('heroTitleLocation')}
+          </span>
         </h1>
-        <p className="mt-4 max-w-2xl text-lg md:text-xl text-primary-foreground/90">
+        <p className="mt-6 max-w-xl text-lg text-primary-foreground/90 leading-relaxed">
           {t('heroSubtitle')}
         </p>
         <Button asChild size="lg" className="mt-8 bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-accent-foreground">

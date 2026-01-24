@@ -7,9 +7,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Srinivasa Rao Provision - Authentic Indian Groceries in Kandukur',
-  description: 'Your one-stop shop for authentic Indian groceries in Kandukur. We offer a wide range of products, from spices and lentils to rice and snacks.',
-  keywords: 'Indian groceries, online grocery, Srinivasa Rao Provision, spices, lentils, rice, snacks, Kandukur',
+  title: 'Srinivasa Rao Provision - Quality Groceries',
+  description: 'Quality groceries, fresh staples, and authentic spices at wholesale prices in Kavali. Visit us directly for quick pickup.',
 };
 
 export default function RootLayout({
@@ -31,10 +30,10 @@ export default function RootLayout({
             "name": "Srinivasa Rao Provision",
             "address": {
               "@type": "PostalAddress",
-              "streetAddress": "Leguntapadu Rd, opposite to sivalayam",
-              "addressLocality": "Kandukur",
+              "streetAddress": "Near Anjaneyaswami Statue, Vengal Rao Nagar",
+              "addressLocality": "Kavali",
               "addressRegion": "Andhra Pradesh",
-              "postalCode": "523105",
+              "postalCode": "524201",
               "addressCountry": "IN"
             },
             "telephone": "+91-9876543210",

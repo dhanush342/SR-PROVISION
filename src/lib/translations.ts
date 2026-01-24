@@ -21,7 +21,8 @@ type TranslationKey =
   | 'productManagement'
   | 'logout'
   | 'invalidCredentials'
-  | 'heroTitle'
+  | 'heroTitleIntro'
+  | 'heroTitleLocation'
   | 'heroSubtitle'
   | 'shopNow'
   | 'blogSubtitle'
@@ -33,7 +34,11 @@ type TranslationKey =
   | 'blog2Content'
   | 'blog3Title'
   | 'blog3Date'
-  | 'blog3Content';
+  | 'blog3Content'
+  | 'footerTagline'
+  | 'visitUs'
+  | 'addressLine1'
+  | 'addressLine2';
 
 
 export const translations: { [key in Language]: { [key in TranslationKey]: string } } = {
@@ -58,8 +63,9 @@ export const translations: { [key in Language]: { [key in TranslationKey]: strin
     productManagement: 'This is where you would manage your products, categories, prices, and availability.',
     logout: 'Logout',
     invalidCredentials: 'Invalid email or password.',
-    heroTitle: 'Srinivasa Rao Provision',
-    heroSubtitle: 'Authentic Indian Groceries in Kandukur. Your one-stop shop for all your daily needs.',
+    heroTitleIntro: 'Your trusted neighborhood store in',
+    heroTitleLocation: 'Kavali',
+    heroSubtitle: 'Quality groceries, fresh staples, and authentic spices at wholesale prices. Visit us directly for quick pickup.',
     shopNow: 'Browse Products',
     blogSubtitle: 'News, stories, and tips from your favorite local grocery store.',
     blog1Title: 'The Heart of Our Store: Quality Spices',
@@ -71,6 +77,10 @@ export const translations: { [key in Language]: { [key in TranslationKey]: strin
     blog3Title: 'Your Daily Goodness: Fresh Dals & Pulses',
     blog3Date: 'July 20, 2024',
     blog3Content: 'Lentils are the backbone of a healthy Indian diet. We offer a wide variety of dals and pulses, cleaned and packaged with care. Learn about the health benefits of moong, toor, and other dals available at our store every day.',
+    footerTagline: 'Serving the community since 2010 with high-quality groceries and staples at fair prices.',
+    visitUs: 'Visit Us',
+    addressLine1: 'Near Anjaneyaswami Statue, Vengal Rao Nagar',
+    addressLine2: 'Kavali, Andhra Pradesh 524201',
   },
   te: {
     appName: 'శ్రీనివాస రావు ప్రొవిజన్',
@@ -93,8 +103,9 @@ export const translations: { [key in Language]: { [key in TranslationKey]: strin
     productManagement: 'ఇక్కడ మీరు మీ ఉత్పత్తులు, వర్గాలు, ధరలు మరియు లభ్యతను నిర్వహిస్తారు.',
     logout: 'లాగ్ అవుట్',
     invalidCredentials: 'తప్పు ఇమెయిల్ లేదా పాస్‌వర్డ్.',
-    heroTitle: 'శ్రీనివాస రావు ప్రొవిజన్',
-    heroSubtitle: 'కందుకూరులో ప్రామాణికమైన భారతీయ కిరాణా సామాగ్రి. మీ రోజువారీ అవసరాలన్నీ తీర్చే ఏకైక వేదిక.',
+    heroTitleIntro: 'మీ నమ్మకమైన కిరాణా దుకాణం',
+    heroTitleLocation: 'కావలిలో',
+    heroSubtitle: 'నాణ్యమైన కిరాణా, తాజా నిత్యావసరాలు, మరియు అసలైన మసాలా దినుసులు హోల్‌సేల్ ధరలకే. త్వరిత పికప్ కోసం మమ్మల్ని నేరుగా సందర్శించండి.',
     shopNow: 'ఉత్పత్తులను బ్రౌజ్ చేయండి',
     blogSubtitle: 'మీకు ఇష్టమైన స్థానిక కిరాణా దుకాణం నుండి వార్తలు, కథలు మరియు చిట్కాలు.',
     blog1Title: 'మా దుకాణం యొక్క గుండె: నాణ్యమైన మసాలాలు',
@@ -106,6 +117,10 @@ export const translations: { [key in Language]: { [key in TranslationKey]: strin
     blog3Title: 'మీ రోజువారీ మంచితనం: తాజా పప్పులు',
     blog3Date: 'జూలై 20, 2024',
     blog3Content: 'పప్పులు ఆరోగ్యకరమైన భారతీయ ఆహారం యొక్క వెన్నెముక. మేము అనేక రకాల పప్పులను అందిస్తాము, జాగ్రత్తగా శుభ్రం చేసి ప్యాక్ చేస్తాము. మా దుకాణంలో ప్రతిరోజూ లభించే పెసర, కంది మరియు ఇతర పప్పుల ఆరోగ్య ప్రయోజనాల గురించి తెలుసుకోండి.',
+    footerTagline: '2010 నుండి సమాజానికి సరసమైన ధరలకు అధిక-నాణ్యత కిరాణా మరియు నిత్యావసరాలను అందిస్తోంది.',
+    visitUs: 'మమ్మల్ని సందర్శించండి',
+    addressLine1: 'అంజనేయస్వామి విగ్రహం దగ్గర, వెంగల్ రావు నగర్',
+    addressLine2: 'కావలి, ఆంధ్రప్రదేశ్ 524201',
   },
   hi: {
     appName: 'श्रीनिवास राव प्रोविजन',
@@ -128,8 +143,9 @@ export const translations: { [key in Language]: { [key in TranslationKey]: strin
     productManagement: 'यह वह जगह है जहाँ आप अपने उत्पादों, श्रेणियों, कीमतों और उपलब्धता का प्रबंधन करेंगे।',
     logout: 'लॉग आउट',
     invalidCredentials: 'अमान्य ईमेल या पासवर्ड।',
-    heroTitle: 'श्रीनिवास राव प्रोविजन',
-    heroSubtitle: 'कंदुकुर में प्रामाणिक भारतीय किराने का सामान। आपकी सभी दैनिक जरूरतों के लिए आपकी वन-स्टॉप शॉप।',
+    heroTitleIntro: 'आपका भरोसेमंद पड़ोस का स्टोर',
+    heroTitleLocation: 'कावली में',
+    heroSubtitle: 'थोक मूल्यों पर गुणवत्तापूर्ण किराने का सामान, ताज़ा स्टेपल और प्रामाणिक मसाले। त्वरित पिकअप के लिए सीधे हमसे मिलें।',
     shopNow: 'उत्पाद ब्राउज़ करें',
     blogSubtitle: 'आपके पसंदीदा स्थानीय किराना स्टोर से समाचार, कहानियाँ और सुझाव।',
     blog1Title: 'हमारी दुकान का दिल: गुणवत्तापूर्ण मसाले',
@@ -141,5 +157,9 @@ export const translations: { [key in Language]: { [key in TranslationKey]: strin
     blog3Title: 'आपकी दैनिक अच्छाई: ताज़ी दालें',
     blog3Date: '20 जुलाई, 2024',
     blog3Content: 'दालें एक स्वस्थ भारतीय आहार की रीढ़ हैं। हम विभिन्न प्रकार की दालें प्रदान करते हैं, जिन्हें देखभाल के साथ साफ और पैक किया जाता है। हमारे स्टोर पर हर दिन उपलब्ध मूंग, अरहर और अन्य दालों के स्वास्थ्य लाभों के बारे में जानें।',
+    footerTagline: '2010 से समुदाय को उचित मूल्य पर उच्च गुणवत्ता वाले किराने और स्टेपल के साथ सेवा प्रदान कर रहा है।',
+    visitUs: 'हमसे मिलें',
+    addressLine1: 'आंजनेयस्वामी प्रतिमा के पास, वंगल राव नगर',
+    addressLine2: 'कावली, आंध्र प्रदेश 524201',
   },
 };
