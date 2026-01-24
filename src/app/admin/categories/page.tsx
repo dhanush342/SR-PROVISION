@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Plus, X } from "lucide-react";
-import { categories as initialCategories, Category, Product } from "@/lib/data";
+import { getCategoriesWithProducts, Category, Product } from "@/lib/data";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,7 +62,7 @@ type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 export default function CategoriesPage() {
   const { language } = useLanguage();
   const { toast } = useToast();
-  const [categories, setCategories] = useState<CategoryWithProducts[]>(initialCategories);
+  const [categories, setCategories] = useState<CategoryWithProducts[]>(getCategoriesWithProducts());
   const [isSheetOpen, setSheetOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryWithProducts | null>(null);
   const [categoryToDelete, setCategoryToDelete] = useState<CategoryWithProducts | null>(null);
