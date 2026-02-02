@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: ['mongodb'],
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

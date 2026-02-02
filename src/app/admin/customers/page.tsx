@@ -65,31 +65,30 @@ export default function CustomersPage() {
     setSheetOpen(true);
   };
 
-  const handleRemoveConfirm = () => {
+  const handleRemoveConfirm = async () => {
     if (!customerToDelete) return;
-    deleteCustomer(customerToDelete.id);
+    await deleteCustomer(customerToDelete.id);
     toast({ title: "Customer Removed!", description: `${customerToDelete.name} has been removed.`, variant: "destructive" });
     setCustomerToDelete(null);
   };
 
-  function onSubmit(data: CustomerFormValues) {
+  async function onSubmit(data: CustomerFormValues) {
     if (editingCustomer) {
       const updatedCustomer: Customer = {
         ...editingCustomer,
         ...data,
         initials: data.name.split(' ').map(n => n[0]).join('').toUpperCase(),
       };
-      updateCustomer(updatedCustomer);
+      await updateCustomer(updatedCustomer);
       toast({ title: "Customer Updated!", description: `Details for ${data.name} have been updated.` });
     } else {
-        const newCustomer: Customer = {
-            id: `cus-${Date.now()}`,
+        const newCustomer: Omit<Customer, 'id'> = {
             ...data,
             joinDate: new Date().toISOString().split('T')[0],
             totalOrders: 0,
             initials: data.name.split(' ').map(n => n[0]).join('').toUpperCase()
         };
-        addCustomer(newCustomer);
+        await addCustomer(newCustomer);
         toast({ title: "Customer Added!", description: `${data.name} has been added to your records.` });
     }
     setSheetOpen(false);

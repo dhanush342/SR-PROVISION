@@ -1,4 +1,3 @@
-
 export type Language = 'en' | 'te' | 'hi';
 
 export type TranslatedString = {
@@ -33,5 +32,3 @@ export type Customer = {
     isLoyal: boolean;
     initials: string;
 };
-
-    

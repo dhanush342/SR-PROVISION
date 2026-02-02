@@ -4,7 +4,8 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import { Language, Product, Category as CategoryType, Customer } from '@/lib/data';
 import { translations } from '@/lib/translations';
-import { productsData, categoriesData, customersData } from '@/database';
+import { getProducts, getCategories, getCustomers, addProduct, updateProduct, deleteProduct, addCategory, updateCategory, deleteCategory, addCustomer, updateCustomer, deleteCustomer } from '@/app/actions';
+import { useRouter } from 'next/navigation';
 
 // --- Language Context ---
 type LanguageContextType = {
@@ -46,15 +47,16 @@ type StoreContextType = {
     products: Product[];
     categories: CategoryType[];
     customers: Customer[];
-    addProduct: (product: Product) => void;
-    updateProduct: (product: Product) => void;
-    deleteProduct: (productId: string) => void;
-    addCategory: (category: CategoryType) => void;
-    updateCategory: (category: CategoryType) => void;
-    deleteCategory: (categoryId: string) => void;
-    addCustomer: (customer: Customer) => void;
-    updateCustomer: (customer: Customer) => void;
-    deleteCustomer: (customerId: string) => void;
+    dataLoading: boolean;
+    addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
+    updateProduct: (product: Product) => Promise<void>;
+    deleteProduct: (productId: string) => Promise<void>;
+    addCategory: (category: Omit<CategoryType, 'id'>) => Promise<void>;
+    updateCategory: (category: CategoryType) => Promise<void>;
+    deleteCategory: (categoryId: string) => Promise<void>;
+    addCustomer: (customer: Omit<Customer, 'id'>) => Promise<void>;
+    updateCustomer: (customer: Customer) => Promise<void>;
+    deleteCustomer: (customerId: string) => Promise<void>;
     getCategoriesWithProducts: () => (CategoryType & { products: Product[] })[];
 };
 
@@ -70,14 +72,16 @@ export const useStore = () => {
 
 // --- Combined App Provider ---
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
   const [language, setLanguage] = useState<Language>('en');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   // Store state
-  const [products, setProducts] = useState<Product[]>(productsData);
-  const [categories, setCategories] = useState<CategoryType[]>(categoriesData);
-  const [customers, setCustomers] = useState<Customer[]>(customersData);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
 
   // Language Logic
   const t = useCallback((key: keyof typeof translations.en) => {
@@ -94,18 +98,41 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("Could not access sessionStorage:", error);
     }
-    setIsLoading(false);
+    setIsAuthLoading(false);
+  }, []);
+  
+  // Data Fetching Logic
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        setDataLoading(true);
+        const [productsData, categoriesData, customersData] = await Promise.all([
+          getProducts(),
+          getCategories(),
+          getCustomers()
+        ]);
+        setProducts(productsData as Product[]);
+        setCategories(categoriesData as CategoryType[]);
+        setCustomers(customersData as Customer[]);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        // Handle error appropriately, maybe show a toast
+      } finally {
+        setDataLoading(false);
+      }
+    };
+    fetchAllData();
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isAuthLoading) {
         try {
           sessionStorage.setItem('isAuthenticated', isAuthenticated.toString());
         } catch (error) {
           console.error("Could not access sessionStorage:", error);
         }
     }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, isAuthLoading]);
 
   const login = (email: string, pass: string) => {
     if (email === "dhanushnaginane@gmail.com" && pass === "Srinu@14111707") {
@@ -119,21 +146,62 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
   };
   
-  // Store Logic
-  const addProduct = (product: Product) => setProducts(prev => [product, ...prev]);
-  const updateProduct = (product: Product) => setProducts(prev => prev.map(p => p.id === product.id ? product : p));
-  const deleteProduct = (productId: string) => setProducts(prev => prev.filter(p => p.id !== productId));
-  
-  const addCategory = (category: CategoryType) => setCategories(prev => [category, ...prev]);
-  const updateCategory = (category: CategoryType) => setCategories(prev => prev.map(c => c.id === category.id ? category : c));
-  const deleteCategory = (categoryId: string) => {
-    setProducts(prev => prev.map(p => p.categoryId === categoryId ? {...p, categoryId: 'uncategorized'} : p));
-    setCategories(prev => prev.filter(c => c.id !== categoryId));
+  // Store Logic with Server Actions
+  const handleAddProduct = async (product: Omit<Product, 'id'>) => {
+    await addProduct(product);
+    // Re-fetching data after mutation to ensure consistency
+    const productsData = await getProducts();
+    setProducts(productsData as Product[]);
   };
 
-  const addCustomer = (customer: Customer) => setCustomers(prev => [customer, ...prev]);
-  const updateCustomer = (customer: Customer) => setCustomers(prev => prev.map(c => c.id === customer.id ? customer : c));
-  const deleteCustomer = (customerId: string) => setCustomers(prev => prev.filter(c => c.id !== customerId));
+  const handleUpdateProduct = async (product: Product) => {
+    await updateProduct(product);
+    const productsData = await getProducts();
+    setProducts(productsData as Product[]);
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    await deleteProduct(productId);
+    const productsData = await getProducts();
+    setProducts(productsData as Product[]);
+  };
+  
+  const handleAddCategory = async (category: Omit<CategoryType, 'id'>) => {
+    await addCategory(category);
+    const categoriesData = await getCategories();
+    setCategories(categoriesData as CategoryType[]);
+  };
+
+  const handleUpdateCategory = async (category: CategoryType) => {
+    await updateCategory(category);
+    const categoriesData = await getCategories();
+    setCategories(categoriesData as CategoryType[]);
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    await deleteCategory(categoryId);
+    const [productsData, categoriesData] = await Promise.all([getProducts(), getCategories()]);
+    setProducts(productsData as Product[]);
+    setCategories(categoriesData as CategoryType[]);
+  };
+
+  const handleAddCustomer = async (customer: Omit<Customer, 'id'>) => {
+    await addCustomer(customer);
+    const customersData = await getCustomers();
+    setCustomers(customersData as Customer[]);
+  };
+
+  const handleUpdateCustomer = async (customer: Customer) => {
+    await updateCustomer(customer);
+    const customersData = await getCustomers();
+    setCustomers(customersData as Customer[]);
+  };
+
+  const handleDeleteCustomer = async (customerId: string) => {
+    await deleteCustomer(customerId);
+    const customersData = await getCustomers();
+    setCustomers(customersData as Customer[]);
+  };
   
   const getCategoriesWithProducts = useCallback(() => {
     const categoryMap = new Map<string, Product[]>();
@@ -151,12 +219,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, [products, categories]);
 
   const languageContextValue: LanguageContextType = { language, setLanguage, t };
-  const authContextValue: AuthContextType = { isAuthenticated, isLoading, login, logout };
+  const authContextValue: AuthContextType = { isAuthenticated, isLoading: isAuthLoading, login, logout };
   const storeContextValue: StoreContextType = { 
-    products, categories, customers,
-    addProduct, updateProduct, deleteProduct,
-    addCategory, updateCategory, deleteCategory,
-    addCustomer, updateCustomer, deleteCustomer,
+    products, categories, customers, dataLoading,
+    addProduct: handleAddProduct,
+    updateProduct: handleUpdateProduct,
+    deleteProduct: handleDeleteProduct,
+    addCategory: handleAddCategory,
+    updateCategory: handleUpdateCategory,
+    deleteCategory: handleDeleteCategory,
+    addCustomer: handleAddCustomer,
+    updateCustomer: handleUpdateCustomer,
+    deleteCustomer: handleDeleteCustomer,
     getCategoriesWithProducts
   };
 
@@ -170,5 +244,3 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     </LanguageContext.Provider>
   );
 };
-
-    

@@ -65,27 +65,26 @@ export default function CategoriesPage() {
     setSheetOpen(true);
   };
   
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!categoryToDelete) return;
-    deleteCategory(categoryToDelete.id);
+    await deleteCategory(categoryToDelete.id);
     toast({ title: "Category deleted!", description: `"${categoryToDelete.name.en}" has been removed.`, variant: "destructive" });
     setCategoryToDelete(null);
   };
 
-  function onSubmit(data: CategoryFormValues) {
+  async function onSubmit(data: CategoryFormValues) {
     if (editingCategory) {
       const updatedCategory: Category = { 
         ...editingCategory, 
         name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi } 
       };
-      updateCategory(updatedCategory);
+      await updateCategory(updatedCategory);
       toast({ title: "Category Updated!", description: `"${data.nameEn}" has been updated.` });
     } else {
-      const newCategory: Category = {
-        id: data.nameEn.toLowerCase().replace(/\s+/g, '-').concat(`-${Date.now()}`),
+      const newCategory: Omit<Category, 'id'> = {
         name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
       };
-      addCategory(newCategory);
+      await addCategory(newCategory);
       toast({ title: "Category Added!", description: `"${data.nameEn}" has been added.` });
     }
     setSheetOpen(false);
@@ -93,7 +92,8 @@ export default function CategoriesPage() {
 
   const categoriesWithCount: CategoryWithProductCount[] = React.useMemo(() => {
     const counts = products.reduce((acc, product) => {
-      acc[product.categoryId] = (acc[product.categoryId] || 0) + 1;
+      const categoryId = product.categoryId || 'uncategorized';
+      acc[categoryId] = (acc[categoryId] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
     return categories.map(cat => ({ ...cat, productCount: counts[cat.id] || 0 }));

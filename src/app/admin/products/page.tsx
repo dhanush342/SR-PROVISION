@@ -29,7 +29,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 type ProductWithCategoryName = Product & { categoryName: string };
 
 const productFormSchema = z.object({
-  id: z.string().optional(),
   nameEn: z.string().min(1, "English name is required"),
   nameTe: z.string().min(1, "Telugu name is required"),
   nameHi: z.string().min(1, "Hindi name is required"),
@@ -73,7 +72,6 @@ export default function AdminProductsPage() {
         if (isSheetOpen) {
             if (editingProduct) {
                 form.reset({
-                    id: editingProduct.id,
                     nameEn: editingProduct.name.en,
                     nameTe: editingProduct.name.te,
                     nameHi: editingProduct.name.hi,
@@ -82,7 +80,7 @@ export default function AdminProductsPage() {
                     options: editingProduct.options,
                 });
             } else {
-                form.reset({ id: `prod-${Date.now()}`, nameEn: "", nameTe: "", nameHi: "", categoryId: "", imageUrl: "", options: [{ quantity: "1kg", price: 0 }] });
+                form.reset({ nameEn: "", nameTe: "", nameHi: "", categoryId: "", imageUrl: "", options: [{ quantity: "1kg", price: 0 }] });
             }
         }
     }, [isSheetOpen, editingProduct, form]);
@@ -119,17 +117,17 @@ export default function AdminProductsPage() {
         }
     };
     
-    const handleStatusChange = (productId: string, checked: boolean) => {
+    const handleStatusChange = async (productId: string, checked: boolean) => {
         const product = products.find(p => p.id === productId);
         if(product) {
-            updateProduct({ ...product, availability: checked ? 'in-stock' : 'out-of-stock' });
+            await updateProduct({ ...product, availability: checked ? 'in-stock' : 'out-of-stock' });
             toast({ title: "Status updated!", description: `${product.name.en} is now ${checked ? 'in stock' : 'out of stock'}.` });
         }
     };
 
-    const handleDeleteConfirm = () => {
+    const handleDeleteConfirm = async () => {
         if (!productToDelete) return;
-        deleteProduct(productToDelete.id);
+        await deleteProduct(productToDelete.id);
         toast({ title: "Product deleted!", description: `${productToDelete.name.en} has been removed.`, variant: "destructive" });
         setProductToDelete(null);
     };
@@ -144,7 +142,7 @@ export default function AdminProductsPage() {
         setSheetOpen(true);
     };
     
-    function onSubmit(data: ProductFormValues) {
+    async function onSubmit(data: ProductFormValues) {
         if (editingProduct) {
             const updated: Product = {
                 ...editingProduct,
@@ -153,18 +151,17 @@ export default function AdminProductsPage() {
                 imageUrl: data.imageUrl,
                 options: data.options,
             };
-            updateProduct(updated);
+            await updateProduct(updated);
             toast({ title: "Product Updated!", description: `"${data.nameEn}" has been updated.` });
         } else {
-            const newProduct: Product = {
-                id: data.id || `prod-${Date.now()}`,
+            const newProduct: Omit<Product, 'id'> = {
                 name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
                 categoryId: data.categoryId,
                 imageUrl: data.imageUrl,
                 options: data.options,
                 availability: 'in-stock',
             };
-            addProduct(newProduct);
+            await addProduct(newProduct);
             toast({ title: "Product Added!", description: `"${data.nameEn}" has been added.` });
         }
         setSheetOpen(false);
@@ -330,9 +327,6 @@ export default function AdminProductsPage() {
                         </SheetHeader>
                         <ScrollArea className="h-[calc(100%-150px)] pr-6 -mr-6">
                         <div className="grid gap-4 py-4">
-                            <FormField control={form.control} name="id" render={({ field }) => (
-                                <FormItem><FormLabel>Product ID</FormLabel><FormControl><Input placeholder="e.g., toor-dal-1" {...field} disabled={!!editingProduct} /></FormControl><FormMessage /></FormItem>
-                            )}/>
                             <FormField control={form.control} name="nameEn" render={({ field }) => (
                                 <FormItem><FormLabel>Product Name (EN)</FormLabel><FormControl><Input placeholder="e.g., Toor Dal" {...field} /></FormControl><FormMessage /></FormItem>
                             )}/>
@@ -419,5 +413,3 @@ export default function AdminProductsPage() {
     </div>
   );
 }
-
-    
