@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -9,7 +10,6 @@ import * as z from "zod";
 
 import { useLanguage, useStore } from '@/context/app-provider';
 import type { Product } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from "@/hooks/use-toast";
 
 import { Button } from '@/components/ui/button';
@@ -34,6 +34,7 @@ const productFormSchema = z.object({
   nameTe: z.string().min(1, "Telugu name is required"),
   nameHi: z.string().min(1, "Hindi name is required"),
   categoryId: z.string().min(1, "Category is required"),
+  imageUrl: z.string().url({ message: "Please enter a valid URL." }),
   options: z.array(z.object({
     quantity: z.string().min(1, "Quantity is required"),
     price: z.coerce.number().min(0.01, "Price must be greater than 0"),
@@ -60,7 +61,7 @@ export default function AdminProductsPage() {
 
     const form = useForm<ProductFormValues>({
         resolver: zodResolver(productFormSchema),
-        defaultValues: { nameEn: "", nameTe: "", nameHi: "", categoryId: "", options: [{ quantity: "", price: 0 }] },
+        defaultValues: { nameEn: "", nameTe: "", nameHi: "", categoryId: "", imageUrl: "", options: [{ quantity: "", price: 0 }] },
     });
 
     const { fields, append, remove } = useFieldArray({
@@ -77,10 +78,11 @@ export default function AdminProductsPage() {
                     nameTe: editingProduct.name.te,
                     nameHi: editingProduct.name.hi,
                     categoryId: editingProduct.categoryId,
+                    imageUrl: editingProduct.imageUrl,
                     options: editingProduct.options,
                 });
             } else {
-                form.reset({ id: `prod-${Date.now()}`, nameEn: "", nameTe: "", nameHi: "", categoryId: "", options: [{ quantity: "1kg", price: 0 }] });
+                form.reset({ id: `prod-${Date.now()}`, nameEn: "", nameTe: "", nameHi: "", categoryId: "", imageUrl: "", options: [{ quantity: "1kg", price: 0 }] });
             }
         }
     }, [isSheetOpen, editingProduct, form]);
@@ -148,6 +150,7 @@ export default function AdminProductsPage() {
                 ...editingProduct,
                 name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
                 categoryId: data.categoryId,
+                imageUrl: data.imageUrl,
                 options: data.options,
             };
             updateProduct(updated);
@@ -157,6 +160,7 @@ export default function AdminProductsPage() {
                 id: data.id || `prod-${Date.now()}`,
                 name: { en: data.nameEn, te: data.nameTe, hi: data.nameHi },
                 categoryId: data.categoryId,
+                imageUrl: data.imageUrl,
                 options: data.options,
                 availability: 'in-stock',
             };
@@ -171,10 +175,10 @@ export default function AdminProductsPage() {
             toast({ title: "Nothing to Export", description: "There are no products in the current view.", variant: 'destructive' });
             return;
         }
-        const csvHeader = "ID,Name (EN),Name (TE),Name (HI),Category,Availability,Pricing Variants\n";
+        const csvHeader = "ID,Name (EN),Name (TE),Name (HI),Category,Availability,Image URL,Pricing Variants\n";
         const csvRows = filteredProducts.map(p => {
             const options = p.options.map(o => `${o.quantity}:${o.price}`).join(' | ');
-            return `"${p.id}","${p.name.en}","${p.name.te}","${p.name.hi}","${p.categoryName}","${p.availability}","${options}"`;
+            return `"${p.id}","${p.name.en}","${p.name.te}","${p.name.hi}","${p.categoryName}","${p.availability}","${p.imageUrl}","${options}"`;
         }).join('\n');
 
         const csvString = `${csvHeader}${csvRows}`;
@@ -253,14 +257,12 @@ export default function AdminProductsPage() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {currentProducts.length > 0 ? currentProducts.map((product) => {
-                    const image = PlaceHolderImages.find(p => p.id === product.id);
-                    return (
+                {currentProducts.length > 0 ? currentProducts.map((product) => (
                     <TableRow key={product.id}>
                     <TableCell className="font-medium">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-md overflow-hidden bg-muted flex-shrink-0">
-                                {image && <Image src={image.imageUrl} alt={product.name.en} width={48} height={48} className="object-cover w-full h-full" />}
+                                <Image src={product.imageUrl} alt={product.name.en} width={48} height={48} className="object-cover w-full h-full" />
                             </div>
                             <div>
                                 <div className="font-semibold line-clamp-1">{product.name.en}</div>
@@ -296,7 +298,7 @@ export default function AdminProductsPage() {
                         </DropdownMenu>
                     </TableCell>
                     </TableRow>
-                )}) : (
+                )) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">No products found.</TableCell>
                   </TableRow>
@@ -339,6 +341,9 @@ export default function AdminProductsPage() {
                             )}/>
                              <FormField control={form.control} name="nameHi" render={({ field }) => (
                                 <FormItem><FormLabel>Product Name (HI)</FormLabel><FormControl><Input placeholder="e.g., अरहर की दाल" {...field} /></FormControl><FormMessage /></FormItem>
+                            )}/>
+                             <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                                <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input placeholder="https://example.com/image.jpg" {...field} /></FormControl><FormMessage /></FormItem>
                             )}/>
                             <FormField control={form.control} name="categoryId" render={({ field }) => (
                                 <FormItem><FormLabel>Category</FormLabel>
@@ -396,7 +401,7 @@ export default function AdminProductsPage() {
                 </DialogHeader>
                 <div className="mt-4 grid gap-4">
                     <div className="w-full h-48 rounded-md overflow-hidden bg-muted relative">
-                        {productToView && <Image src={PlaceHolderImages.find(p => p.id === productToView.id)?.imageUrl || ''} alt={productToView.name.en} fill style={{objectFit:"cover"}} />}
+                        {productToView && <Image src={productToView.imageUrl} alt={productToView.name.en} fill style={{objectFit:"cover"}} />}
                     </div>
                     <div className="text-sm"><strong>Category:</strong> <Badge variant="secondary">{productToView?.categoryName}</Badge></div>
                     <div className="text-sm"><strong>Status:</strong> <Badge variant={productToView?.availability === 'in-stock' ? 'default' : 'destructive'}>{productToView?.availability}</Badge></div>
@@ -414,3 +419,5 @@ export default function AdminProductsPage() {
     </div>
   );
 }
+
+    

@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/context/app-provider';
 import type { Product } from '@/lib/data';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 interface ProductCardProps {
   product: Product;
@@ -17,8 +16,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { language, t } = useLanguage();
   const [selectedOption, setSelectedOption] = useState(product.options[0]);
-  const image = PlaceHolderImages.find(p => p.id === product.id);
-  const [imgSrc, setImgSrc] = useState(image?.imageUrl || `https://picsum.photos/seed/${product.id}/400/300`);
+  const [imgSrc, setImgSrc] = useState(product.imageUrl || `https://picsum.photos/seed/${product.id}/400/300`);
 
   const handleQuantityChange = (value: string) => {
     const option = product.options.find(opt => opt.quantity === value);
@@ -39,7 +37,6 @@ export function ProductCard({ product }: ProductCardProps) {
               loading="lazy"
               className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
               onError={() => setImgSrc(`https://picsum.photos/seed/${product.id}/400/300`)}
-              data-ai-hint={image?.imageHint}
             />
         </div>
       </CardHeader>
@@ -80,3 +77,5 @@ export function ProductCard({ product }: ProductCardProps) {
     </Card>
   );
 }
+
+    

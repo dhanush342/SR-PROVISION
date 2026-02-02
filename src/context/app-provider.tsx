@@ -1,9 +1,10 @@
+
 "use client";
 
 import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import { Language, Product, Category as CategoryType, Customer } from '@/lib/data';
 import { translations } from '@/lib/translations';
-import { productsData, categoriesData, customersData } from '@/lib/data';
+import { productsData, categoriesData, customersData } from '@/database';
 
 // --- Language Context ---
 type LanguageContextType = {
@@ -169,3 +170,5 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     </LanguageContext.Provider>
   );
 };
+
+    

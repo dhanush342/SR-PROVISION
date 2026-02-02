@@ -4,11 +4,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { heroImage } from '@/database/site';
 import { useLanguage } from '@/context/app-provider';
 
 export function Hero() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'hero-background');
   const { t } = useLanguage();
 
   return (
@@ -44,3 +43,5 @@ export function Hero() {
     </section>
   );
 }
+
+    
