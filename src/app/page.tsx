@@ -8,6 +8,7 @@ import { useLanguage, useStore } from '@/context/app-provider';
 import type { Category } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { LayoutGrid } from 'lucide-react';
+import { Faq } from '@/components/faq';
 
 export default function Home() {
   const { language } = useLanguage();
@@ -54,6 +55,7 @@ export default function Home() {
 
         <ProductList categories={displayCategories} />
       </div>
+      <Faq />
     </>
   );
 }
