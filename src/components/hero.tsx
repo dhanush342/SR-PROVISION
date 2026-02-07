@@ -4,11 +4,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { heroImage } from '@/database/site';
 import { useLanguage } from '@/context/app-provider';
 
 export function Hero() {
   const { t } = useLanguage();
+  
+  const heroImage = {
+    imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop',
+    description: 'A welcoming aisle in a well-stocked grocery store, with shelves full of products.',
+    imageHint: 'grocery store aisle'
+  };
 
   return (
     <section className="relative h-[60vh] min-h-[400px] w-full flex items-center justify-center text-primary-foreground bg-secondary">

@@ -4,8 +4,10 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import { Language, Product, Category as CategoryType, Customer } from '@/lib/data';
 import { translations } from '@/lib/translations';
-import { getProducts, getCategories, getCustomers, addProduct, updateProduct, deleteProduct, addCategory, updateCategory, deleteCategory, addCustomer, updateCustomer, deleteCustomer } from '@/app/actions';
-import { useRouter } from 'next/navigation';
+import { initialProducts } from '@/database/products';
+import { initialCategories } from '@/database/categories';
+import { initialCustomers } from '@/database/customers';
+
 
 // --- Language Context ---
 type LanguageContextType = {
@@ -72,16 +74,15 @@ export const useStore = () => {
 
 // --- Combined App Provider ---
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const router = useRouter();
   const [language, setLanguage] = useState<Language>('en');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-  // Store state
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  // Store state - Initialized from static files
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [categories, setCategories] = useState<CategoryType[]>(initialCategories);
+  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+  const [dataLoading, setDataLoading] = useState(false); // No initial load from db
 
   // Language Logic
   const t = useCallback((key: keyof typeof translations.en) => {
@@ -101,28 +102,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthLoading(false);
   }, []);
   
-  // Data Fetching Logic
-  useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        setDataLoading(true);
-        const [productsData, categoriesData, customersData] = await Promise.all([
-          getProducts(),
-          getCategories(),
-          getCustomers()
-        ]);
-        setProducts(productsData as Product[]);
-        setCategories(categoriesData as CategoryType[]);
-        setCustomers(customersData as Customer[]);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        // Handle error appropriately, maybe show a toast
-      } finally {
-        setDataLoading(false);
-      }
-    };
-    fetchAllData();
-  }, []);
 
   useEffect(() => {
     if (!isAuthLoading) {
@@ -146,76 +125,82 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
   };
   
-  // Store Logic with Server Actions
+  // Store Logic with in-memory state
   const handleAddProduct = async (product: Omit<Product, 'id'>) => {
-    await addProduct(product);
-    // Re-fetching data after mutation to ensure consistency
-    const productsData = await getProducts();
-    setProducts(productsData as Product[]);
+    const newProduct = { ...product, id: `prod-${Date.now()}` };
+    setProducts(prev => [...prev, newProduct]);
+    return Promise.resolve();
   };
 
   const handleUpdateProduct = async (product: Product) => {
-    await updateProduct(product);
-    const productsData = await getProducts();
-    setProducts(productsData as Product[]);
+    setProducts(prev => prev.map(p => (p.id === product.id ? product : p)));
+    return Promise.resolve();
   };
 
   const handleDeleteProduct = async (productId: string) => {
-    await deleteProduct(productId);
-    const productsData = await getProducts();
-    setProducts(productsData as Product[]);
+    setProducts(prev => prev.filter(p => p.id !== productId));
+    return Promise.resolve();
   };
   
   const handleAddCategory = async (category: Omit<CategoryType, 'id'>) => {
-    await addCategory(category);
-    const categoriesData = await getCategories();
-    setCategories(categoriesData as CategoryType[]);
+    const newCategory = { ...category, id: `cat-${Date.now()}` };
+    setCategories(prev => [...prev, newCategory]);
+    return Promise.resolve();
   };
 
   const handleUpdateCategory = async (category: CategoryType) => {
-    await updateCategory(category);
-    const categoriesData = await getCategories();
-    setCategories(categoriesData as CategoryType[]);
+    setCategories(prev => prev.map(c => (c.id === category.id ? category : c)));
+    return Promise.resolve();
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    await deleteCategory(categoryId);
-    const [productsData, categoriesData] = await Promise.all([getProducts(), getCategories()]);
-    setProducts(productsData as Product[]);
-    setCategories(categoriesData as CategoryType[]);
+    setCategories(prev => prev.filter(c => c.id !== categoryId));
+    // Also mark products in that category as uncategorized
+    setProducts(prev => prev.map(p => p.categoryId === categoryId ? {...p, categoryId: 'uncategorized'} : p));
+    return Promise.resolve();
   };
 
   const handleAddCustomer = async (customer: Omit<Customer, 'id'>) => {
-    await addCustomer(customer);
-    const customersData = await getCustomers();
-    setCustomers(customersData as Customer[]);
+    const newCustomer = { ...customer, id: `cust-${Date.now()}` };
+    setCustomers(prev => [...prev, newCustomer]);
+    return Promise.resolve();
   };
 
   const handleUpdateCustomer = async (customer: Customer) => {
-    await updateCustomer(customer);
-    const customersData = await getCustomers();
-    setCustomers(customersData as Customer[]);
+    setCustomers(prev => prev.map(c => (c.id === customer.id ? customer : c)));
+    return Promise.resolve();
   };
 
   const handleDeleteCustomer = async (customerId: string) => {
-    await deleteCustomer(customerId);
-    const customersData = await getCustomers();
-    setCustomers(customersData as Customer[]);
+    setCustomers(prev => prev.filter(c => c.id !== customerId));
+    return Promise.resolve();
   };
   
   const getCategoriesWithProducts = useCallback(() => {
     const categoryMap = new Map<string, Product[]>();
     products.forEach(p => {
-        if (!categoryMap.has(p.categoryId)) {
-            categoryMap.set(p.categoryId, []);
+        const catId = p.categoryId || 'uncategorized';
+        if (!categoryMap.has(catId)) {
+            categoryMap.set(catId, []);
         }
-        categoryMap.get(p.categoryId)!.push(p);
+        categoryMap.get(catId)!.push(p);
     });
 
-    return categories.map(cat => ({
+    const categorized = categories.map(cat => ({
         ...cat,
         products: categoryMap.get(cat.id) || []
-    })).sort((a,b) => a.id === 'uncategorized' ? 1 : b.id === 'uncategorized' ? -1 : 0);
+    }));
+
+    // Handle uncategorized products
+    if(categoryMap.has('uncategorized')) {
+        categorized.push({
+            id: 'uncategorized',
+            name: { en: 'Uncategorized', te: 'వర్గీకరించని', hi: 'अवर्गीकृत' },
+            products: categoryMap.get('uncategorized')!
+        });
+    }
+    
+    return categorized;
   }, [products, categories]);
 
   const languageContextValue: LanguageContextType = { language, setLanguage, t };
